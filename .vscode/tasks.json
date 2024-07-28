@@ -1,0 +1,18 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"command": "dotnet",
+			"type": "process",
+			"problemMatcher": [],
+			"label": "dotnet: build",
+			"args": [
+				"run",
+				"-c",
+				"Release",
+				"--project",
+				"SpanLinq.Benchmarks"
+			]
+		}
+	]
+}

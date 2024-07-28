@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: Benchmark Debug",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/SpanLinq.Benchmarks/SpanLinq.Benchmarks.csproj"
+        },
+        {
+            "name": "C#: Playground",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\playground\\Playground.csproj",
+            "launchConfigurationId": "TargetFramework=;Playground",
+        }
+    ]
+}
