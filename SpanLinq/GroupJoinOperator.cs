@@ -97,7 +97,9 @@ namespace SpanLinq
         internal int OuterArrayIndex;
         internal TInner[] InnerArray;
         internal int InnerArrayLength;
-        internal ArrayPoolDictionary<TKey, ArrayPoolList<TInner>>? Dictionary;
+#nullable disable   // TODO: avoid CS8714
+        internal ArrayPoolDictionary<TKey, ArrayPoolList<TInner>> Dictionary;
+#nullable restore
         internal ArrayPoolList<TInner>? NullList;
 
         private GroupJoinOperator(TOperator op, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector, TComparer comparer)

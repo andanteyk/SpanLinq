@@ -10,7 +10,7 @@ namespace SpanLinq.Benchmarks
         [Benchmark, BenchmarkCategory("Span", "Except")]
         public void SpanExcept()
         {
-            Range.AsSpan().Except(Range).Consume(Helper.Consumer);
+            Range.AsSpan().Except(Range).AsSpan().Consume(Helper.Consumer);
         }
 
         [Benchmark, BenchmarkCategory("System", "Except")]

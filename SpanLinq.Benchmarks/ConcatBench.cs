@@ -10,7 +10,7 @@ namespace SpanLinq.Benchmarks
         [Benchmark, BenchmarkCategory("Span", "Concat")]
         public void SpanConcat()
         {
-            Range.AsSpan().Concat(Range).Consume(Helper.Consumer);
+            Range.AsSpan().Concat(Range).AsSpan().Consume(Helper.Consumer);
         }
 
         [Benchmark, BenchmarkCategory("System", "Concat")]

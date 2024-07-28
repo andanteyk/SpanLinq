@@ -90,7 +90,9 @@ namespace SpanLinq
         internal Func<TInner, TKey> InnerKeySelector;
         internal Func<TOuter, TInner, TResult> ResultSelector;
         internal readonly TComparer Comparer;
-        internal ArrayPoolDictionary<TKey, ArrayPoolList<TInner>>? Dictionary;
+#nullable disable   // TODO: avoid CS8714
+        internal ArrayPoolDictionary<TKey, ArrayPoolList<TInner>> Dictionary;
+#nullable restore
         internal TOuter CurrentOuter;
         internal ArrayPoolList<TInner>? CurrentInners;
 

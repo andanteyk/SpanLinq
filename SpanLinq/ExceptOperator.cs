@@ -1,167 +1,154 @@
-using System.Buffers;
-using System.Transactions;
-
 namespace SpanLinq
 {
     public static partial class SpanEnumerable
     {
-        public static SpanEnumerator<T, T, ExceptOperator<T, T, IdentityOperator<T>, EqualityComparer<T>>> Except<T>(this ReadOnlySpan<T> span, ReadOnlySpan<T> second)
+        public static SpanEnumerator2<T, T, T, ExceptOperator<T, T, T, IdentityOperator<T>, IdentityOperator<T>, EqualityComparer<T>>> Except<T>(this ReadOnlySpan<T> span, ReadOnlySpan<T> second)
         {
-            return new(span, new(new(), second, EqualityComparer<T>.Default));
+            return new(span, second, new(new(), new(), EqualityComparer<T>.Default));
         }
 
-        public static SpanEnumerator<T, T, ExceptOperator<T, T, IdentityOperator<T>, TComparer>> Except<T, TComparer>(this ReadOnlySpan<T> span, ReadOnlySpan<T> second, TComparer comparer)
+        public static SpanEnumerator2<T, T, T, ExceptOperator<T, T, T, IdentityOperator<T>, IdentityOperator<T>, TComparer>> Except<T, TComparer>(this ReadOnlySpan<T> span, ReadOnlySpan<T> second, TComparer comparer)
             where TComparer : IEqualityComparer<T>
         {
-            return new(span, new(new(), second, comparer));
+            return new(span, second, new(new(), new(), comparer));
         }
 
-        public static SpanEnumerator<T, T, ExceptOperator<T, T, IdentityOperator<T>, EqualityComparer<T>>> Except<T, TSecondSource, TSecondOperator>(this ReadOnlySpan<T> span, SpanEnumerator<TSecondSource, T, TSecondOperator> second)
-            where TSecondOperator : ISpanOperator<TSecondSource, T>
+        public static SpanEnumerator2<T, TSource2, T, ExceptOperator<T, TSource2, T, IdentityOperator<T>, TOperator2, EqualityComparer<T>>> Except<T, TSource2, TOperator2>(this ReadOnlySpan<T> span, SpanEnumerator<TSource2, T, TOperator2> second)
+            where TOperator2 : ISpanOperator<TSource2, T>
         {
-            return new(span, ExceptOperator<T, T, IdentityOperator<T>, EqualityComparer<T>>.Create(new(), second, EqualityComparer<T>.Default));
+            return new(span, second.Source, new(new(), second.Operator, EqualityComparer<T>.Default));
         }
 
-        public static SpanEnumerator<T, T, ExceptOperator<T, T, IdentityOperator<T>, TComparer>> Except<T, TSecondSource, TSecondOperator, TComparer>(this ReadOnlySpan<T> span, SpanEnumerator<TSecondSource, T, TSecondOperator> second, TComparer comparer)
-            where TSecondOperator : ISpanOperator<TSecondSource, T>
+        public static SpanEnumerator2<T, TSource2, T, ExceptOperator<T, TSource2, T, IdentityOperator<T>, TOperator2, TComparer>> Except<T, TSource2, TOperator2, TComparer>(this ReadOnlySpan<T> span, SpanEnumerator<TSource2, T, TOperator2> second, TComparer comparer)
+            where TOperator2 : ISpanOperator<TSource2, T>
             where TComparer : IEqualityComparer<T>
         {
-            return new(span, ExceptOperator<T, T, IdentityOperator<T>, TComparer>.Create(new(), second, comparer));
+            return new(span, second.Source, new(new(), second.Operator, comparer));
         }
 
 
-        public static SpanEnumerator<T, T, ExceptOperator<T, T, IdentityOperator<T>, EqualityComparer<T>>> Except<T>(this Span<T> span, ReadOnlySpan<T> second)
+        public static SpanEnumerator2<T, T, T, ExceptOperator<T, T, T, IdentityOperator<T>, IdentityOperator<T>, EqualityComparer<T>>> Except<T>(this Span<T> span, ReadOnlySpan<T> second)
         {
-            return new(span, new(new(), second, EqualityComparer<T>.Default));
+            return new(span, second, new(new(), new(), EqualityComparer<T>.Default));
         }
 
-        public static SpanEnumerator<T, T, ExceptOperator<T, T, IdentityOperator<T>, TComparer>> Except<T, TComparer>(this Span<T> span, ReadOnlySpan<T> second, TComparer comparer)
+        public static SpanEnumerator2<T, T, T, ExceptOperator<T, T, T, IdentityOperator<T>, IdentityOperator<T>, TComparer>> Except<T, TComparer>(this Span<T> span, ReadOnlySpan<T> second, TComparer comparer)
             where TComparer : IEqualityComparer<T>
         {
-            return new(span, new(new(), second, comparer));
+            return new(span, second, new(new(), new(), comparer));
         }
 
-        public static SpanEnumerator<T, T, ExceptOperator<T, T, IdentityOperator<T>, EqualityComparer<T>>> Except<T, TSecondSource, TSecondOperator>(this Span<T> span, SpanEnumerator<TSecondSource, T, TSecondOperator> second)
-            where TSecondOperator : ISpanOperator<TSecondSource, T>
+        public static SpanEnumerator2<T, TSource2, T, ExceptOperator<T, TSource2, T, IdentityOperator<T>, TOperator2, EqualityComparer<T>>> Except<T, TSource2, TOperator2>(this Span<T> span, SpanEnumerator<TSource2, T, TOperator2> second)
+            where TOperator2 : ISpanOperator<TSource2, T>
         {
-            return new(span, ExceptOperator<T, T, IdentityOperator<T>, EqualityComparer<T>>.Create(new(), second, EqualityComparer<T>.Default));
+            return new(span, second.Source, new(new(), second.Operator, EqualityComparer<T>.Default));
         }
 
-        public static SpanEnumerator<T, T, ExceptOperator<T, T, IdentityOperator<T>, TComparer>> Except<T, TSecondSource, TSecondOperator, TComparer>(this Span<T> span, SpanEnumerator<TSecondSource, T, TSecondOperator> second, TComparer comparer)
-            where TSecondOperator : ISpanOperator<TSecondSource, T>
+        public static SpanEnumerator2<T, TSource2, T, ExceptOperator<T, TSource2, T, IdentityOperator<T>, TOperator2, TComparer>> Except<T, TSource2, TOperator2, TComparer>(this Span<T> span, SpanEnumerator<TSource2, T, TOperator2> second, TComparer comparer)
+            where TOperator2 : ISpanOperator<TSource2, T>
             where TComparer : IEqualityComparer<T>
         {
-            return new(span, ExceptOperator<T, T, IdentityOperator<T>, TComparer>.Create(new(), second, comparer));
+            return new(span, second.Source, new(new(), second.Operator, comparer));
         }
     }
 
     partial struct SpanEnumerator<TSource, TOut, TOperator>
     {
-        public SpanEnumerator<TSource, TOut, ExceptOperator<TSource, TOut, TOperator, EqualityComparer<TOut>>> Except<TComparer>(ReadOnlySpan<TOut> second)
+        public SpanEnumerator2<TSource, TOut, TOut, ExceptOperator<TSource, TOut, TOut, TOperator, IdentityOperator<TOut>, EqualityComparer<TOut>>> Except(ReadOnlySpan<TOut> second)
         {
-            return new(Source, new(Operator, second, EqualityComparer<TOut>.Default));
+            return new(Source, second, new(Operator, new(), EqualityComparer<TOut>.Default));
         }
 
-        public SpanEnumerator<TSource, TOut, ExceptOperator<TSource, TOut, TOperator, TComparer>> Except<TComparer>(ReadOnlySpan<TOut> second, TComparer comparer)
+        public SpanEnumerator2<TSource, TOut, TOut, ExceptOperator<TSource, TOut, TOut, TOperator, IdentityOperator<TOut>, TComparer>> Except<TComparer>(ReadOnlySpan<TOut> second, TComparer comparer)
             where TComparer : IEqualityComparer<TOut>
         {
-            return new(Source, new(Operator, second, comparer));
+            return new(Source, second, new(Operator, new(), comparer));
         }
 
-        public SpanEnumerator<TSource, TOut, ExceptOperator<TSource, TOut, TOperator, EqualityComparer<TOut>>> Except<TSecondSource, TSecondOperator>(SpanEnumerator<TSecondSource, TOut, TSecondOperator> second)
-            where TSecondOperator : ISpanOperator<TSecondSource, TOut>
+        public SpanEnumerator2<TSource, TSource2, TOut, ExceptOperator<TSource, TSource2, TOut, TOperator, TOperator2, EqualityComparer<TOut>>> Except<TSource2, TOperator2>(SpanEnumerator<TSource2, TOut, TOperator2> second)
+            where TOperator2 : ISpanOperator<TSource2, TOut>
         {
-            return new(Source, ExceptOperator<TSource, TOut, TOperator, EqualityComparer<TOut>>.Create(Operator, second, EqualityComparer<TOut>.Default));
+            return new(Source, second.Source, new(Operator, second.Operator, EqualityComparer<TOut>.Default));
         }
 
-        public SpanEnumerator<TSource, TOut, ExceptOperator<TSource, TOut, TOperator, TComparer>> Except<TSecondSource, TSecondOperator, TComparer>(SpanEnumerator<TSecondSource, TOut, TSecondOperator> second, TComparer comparer)
-            where TSecondOperator : ISpanOperator<TSecondSource, TOut>
+        public SpanEnumerator2<TSource, TSource2, TOut, ExceptOperator<TSource, TSource2, TOut, TOperator, TOperator2, TComparer>> Except<TSource2, TOperator2, TComparer>(SpanEnumerator<TSource2, TOut, TOperator2> second, TComparer comparer)
+            where TOperator2 : ISpanOperator<TSource2, TOut>
             where TComparer : IEqualityComparer<TOut>
         {
-            return new(Source, ExceptOperator<TSource, TOut, TOperator, TComparer>.Create(Operator, second, comparer));
+            return new(Source, second.Source, new(Operator, second.Operator, comparer));
         }
     }
 
-    /// <remarks>
-    /// `second` will be evaluated instantly.
-    /// </remarks>
-    public struct ExceptOperator<TSpan, TIn, TOperator, TComparer> : ISpanOperator<TSpan, TIn>
-        where TOperator : ISpanOperator<TSpan, TIn>
+    public struct ExceptOperator<TSpan1, TSpan2, TIn, TOperator1, TOperator2, TComparer> : ISpanOperator2<TSpan1, TSpan2, TIn>, IDisposable
+        where TOperator1 : ISpanOperator<TSpan1, TIn>
+        where TOperator2 : ISpanOperator<TSpan2, TIn>
         where TComparer : IEqualityComparer<TIn>
     {
-        internal TOperator Operator;
+        internal TOperator1 Operator1;
+        internal TOperator2 Operator2;
+        internal TComparer Comparer;
 #nullable disable   // TODO: avoid CS8714
         internal ArrayPoolDictionary<TIn, byte> Dictionary;
 #nullable restore
         internal bool ExistsNull;
 
-        internal ExceptOperator(TOperator op, ReadOnlySpan<TIn> second, TComparer comparer)
+        internal ExceptOperator(TOperator1 op1, TOperator2 op2, TComparer comparer)
         {
-            Operator = op;
+            Operator1 = op1;
+            Operator2 = op2;
             ExistsNull = false;
-            Dictionary = new(second.Length, comparer);
-            foreach (var value in second)
-            {
-                if (value == null)
-                {
-                    ExistsNull = true;
-                }
-                else
-                {
-                    Dictionary[value] = 0;
-                }
-            }
+            Comparer = comparer;
+            Dictionary = null;
         }
 
-        internal static ExceptOperator<TSpan, TIn, TOperator, TComparer> Create<TSecondSpan, TSecondOperator>(TOperator op, SpanEnumerator<TSecondSpan, TIn, TSecondOperator> second, TComparer comparer)
-            where TSecondOperator : ISpanOperator<TSecondSpan, TIn>
+        public void Dispose()
         {
-            var secondSpan = second.ToArrayPool(out var secondArray);
-            var result = new ExceptOperator<TSpan, TIn, TOperator, TComparer>(op, secondSpan, comparer);
-            ArrayPool<TIn>.Shared.Return(secondArray);
-            return result;
+            Dictionary?.Dispose();
         }
 
-        public bool TryGetNonEnumeratedCount(ReadOnlySpan<TSpan> source, out int length)
+        public bool TryGetNonEnumeratedCount(ReadOnlySpan<TSpan1> source1, ReadOnlySpan<TSpan2> source2, out int length)
         {
             length = default;
             return false;
         }
 
-        public TIn TryMoveNext(ref ReadOnlySpan<TSpan> source, out bool success)
+        public TIn TryMoveNext(ref ReadOnlySpan<TSpan1> source1, ref ReadOnlySpan<TSpan2> source2, out bool success)
         {
-            while (true)
+            if (Dictionary == null)
             {
-                var current = Operator.TryMoveNext(ref source, out bool ok);
-                if (!ok)
-                {
-                    success = false;
-                    return default!;
-                }
+                Operator2.TryGetNonEnumeratedCount(source2, out int length2);
+                Dictionary = new(length2, Comparer);
 
-                if (current == null)
+                while (true)
                 {
-                    if (ExistsNull)
+                    var current2 = Operator2.TryMoveNext(ref source2, out bool ok);
+                    if (!ok)
                     {
-                        continue;
+                        break;
                     }
-                    else
-                    {
-                        ExistsNull = true;
-                        success = true;
-                        return default!;
-                    }
-                }
-                if (Dictionary.TryAdd(current, 0))
-                {
-                    success = true;
-                    return current;
-                }
-                else
-                {
-                    continue;
+
+                    Dictionary[current2] = default;
                 }
             }
+
+            while (true)
+            {
+                var current1 = Operator1.TryMoveNext(ref source1, out bool ok);
+                if (!ok)
+                {
+                    break;
+                }
+
+                if (!Dictionary.ContainsKey(current1))
+                {
+                    Dictionary.Add(current1, default);
+                    success = true;
+                    return current1;
+                }
+            }
+
+            success = false;
+            return default!;
         }
     }
 }

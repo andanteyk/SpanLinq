@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Security.Cryptography.X509Certificates;
 
 namespace SpanLinq
 {
@@ -153,8 +152,10 @@ namespace SpanLinq
         internal readonly Func<TIn, TElement> ElementSelector;
         internal readonly Func<TKey, IList<TElement>, TOut> ResultSelector;
         internal ArrayPoolList<TElement>? NullKeys;
+#nullable disable   // TODO: avoid CS8714
         internal ArrayPoolDictionary<TKey, ArrayPoolList<TElement>> Dictionary;
         internal ArrayPoolDictionary<TKey, ArrayPoolList<TElement>>.Enumerator DictionaryEnumerator;
+#nullable restore
         internal readonly TComparer Comparer;
 
         internal GroupByOperator(TOperator op, Func<TIn, TKey> keySelector, Func<TIn, TElement> elementSelector, Func<TKey, IList<TElement>, TOut> resultSelector, TComparer comparer)

@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpanLinq.Tests", "SpanLinq.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpanLinq.Benchmarks", "SpanLinq.Benchmarks\SpanLinq.Benchmarks.csproj", "{7305A140-C1F4-4275-822F-150E9386CF68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playground", "playground\Playground.csproj", "{080FCDA7-68B6-4C34-AAD3-133A0B6A8FB3}"
-EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,17 +61,5 @@ Global
 		{7305A140-C1F4-4275-822F-150E9386CF68}.Release|x64.Build.0 = Release|Any CPU
 		{7305A140-C1F4-4275-822F-150E9386CF68}.Release|x86.ActiveCfg = Release|Any CPU
 		{7305A140-C1F4-4275-822F-150E9386CF68}.Release|x86.Build.0 = Release|Any CPU
-		{080FCDA7-68B6-4C34-AAD3-133A0B6A8FB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{080FCDA7-68B6-4C34-AAD3-133A0B6A8FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{080FCDA7-68B6-4C34-AAD3-133A0B6A8FB3}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{080FCDA7-68B6-4C34-AAD3-133A0B6A8FB3}.Debug|x64.Build.0 = Debug|Any CPU
-		{080FCDA7-68B6-4C34-AAD3-133A0B6A8FB3}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{080FCDA7-68B6-4C34-AAD3-133A0B6A8FB3}.Debug|x86.Build.0 = Debug|Any CPU
-		{080FCDA7-68B6-4C34-AAD3-133A0B6A8FB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{080FCDA7-68B6-4C34-AAD3-133A0B6A8FB3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{080FCDA7-68B6-4C34-AAD3-133A0B6A8FB3}.Release|x64.ActiveCfg = Release|Any CPU
-		{080FCDA7-68B6-4C34-AAD3-133A0B6A8FB3}.Release|x64.Build.0 = Release|Any CPU
-		{080FCDA7-68B6-4C34-AAD3-133A0B6A8FB3}.Release|x86.ActiveCfg = Release|Any CPU
-		{080FCDA7-68B6-4C34-AAD3-133A0B6A8FB3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
