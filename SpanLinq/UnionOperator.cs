@@ -87,7 +87,9 @@ namespace SpanLinq
         internal TOperator1 Operator1;
         internal TOperator2 Operator2;
         internal readonly TComparer Comparer;
-        internal ArrayPoolDictionary<TIn, byte>? Dictionary;
+#nullable disable
+        internal ArrayPoolDictionary<TIn, byte> Dictionary;
+#nullable restore
         internal bool ExistsNull;
 
         internal UnionOperator(TOperator1 operator1, TOperator2 operator2, TComparer comparer)

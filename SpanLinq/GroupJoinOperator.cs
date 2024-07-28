@@ -151,11 +151,11 @@ namespace SpanLinq
                 var outerKey = OuterKeySelector(outer);
                 if (outerKey == null)
                 {
-                    NullList ??= new(0);
+                    NullList ??= new();
                 }
                 else
                 {
-                    Dictionary.TryAdd(outerKey, new(0));
+                    Dictionary.TryAdd(outerKey, new());
                 }
             }
 

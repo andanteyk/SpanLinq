@@ -1,23 +1,27 @@
 using System.Buffers;
 using System.Collections;
 
-#nullable enable
-
 namespace SpanLinq
 {
-    public partial class ArrayPoolList<T> : IList<T>, IDisposable
+    public class ArrayPoolList<T> : IList<T>, IDisposable
     {
-        private T[]? m_Array;
+        private T[] m_Array;
         private int m_Length;
 
 
-        public ArrayPoolList(int length)
+        public ArrayPoolList()
         {
-            if (length < 0)
-                throw new ArgumentOutOfRangeException(nameof(length));
+            m_Array = ArrayPool<T>.Shared.Rent(16);
+            m_Length = 0;
+        }
 
-            m_Array = ArrayPool<T>.Shared.Rent(length);
-            m_Length = length;
+        public ArrayPoolList(int capacity)
+        {
+            if (capacity < 0)
+                throw new ArgumentOutOfRangeException(nameof(capacity));
+
+            m_Array = ArrayPool<T>.Shared.Rent(capacity);
+            m_Length = 0;
         }
 
         public ArrayPoolList(ReadOnlySpan<T> span)
@@ -60,11 +64,6 @@ namespace SpanLinq
             }
         }
 
-        private ArrayPoolList()
-        {
-            m_Array = null;
-            m_Length = 0;
-        }
 
         private static void Resize(ref T[] old, int size)
         {

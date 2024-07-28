@@ -129,7 +129,7 @@ namespace SpanLinq
             if (Dictionary == null)
             {
                 Dictionary = new(Comparer);
-                CurrentInners = new(0);
+                CurrentInners = new();
 
                 while (true)
                 {
@@ -146,7 +146,7 @@ namespace SpanLinq
                     }
                     else
                     {
-                        Dictionary[current2Key] = new(0) { current2 };
+                        Dictionary[current2Key] = new() { current2 };
                     }
                 }
             }

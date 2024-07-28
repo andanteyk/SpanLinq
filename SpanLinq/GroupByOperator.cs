@@ -221,7 +221,7 @@ namespace SpanLinq
 
                 if (key == null)
                 {
-                    NullKeys ??= new(0);
+                    NullKeys ??= new();
                     NullKeys.Add(element);
                 }
                 else if (Dictionary.TryGetValue(key, out var values))
@@ -230,7 +230,7 @@ namespace SpanLinq
                 }
                 else
                 {
-                    Dictionary.Add(key, new ArrayPoolList<TElement>(0) { element });
+                    Dictionary.Add(key, new ArrayPoolList<TElement>() { element });
                 }
             }
 
