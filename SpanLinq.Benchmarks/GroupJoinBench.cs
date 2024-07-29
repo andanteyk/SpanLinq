@@ -10,7 +10,7 @@ namespace SpanLinq.Benchmarks
         [Benchmark, BenchmarkCategory("Span", "GroupJoin")]
         public void SpanGroupJoin()
         {
-            Range.AsSpan().GroupJoin(Range, i => i, i => i, (int key, IEnumerable<int> result) => key).Consume(Helper.Consumer);
+            Range.AsSpan().GroupJoin(Range, i => i, i => i, (int key, IEnumerable<int> result) => key).ToEnumerator().Consume(Helper.Consumer);
         }
 
         [Benchmark, BenchmarkCategory("System", "GroupJoin")]

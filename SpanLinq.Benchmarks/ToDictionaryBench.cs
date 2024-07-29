@@ -8,15 +8,15 @@ namespace SpanLinq.Benchmarks
         private int[] Range = Enumerable.Range(0, Helper.DefaultSequenceLength).ToArray();
 
         [Benchmark, BenchmarkCategory("Span", "ToDictionary")]
-        public void SpanToDictionary()
+        public Dictionary<int, int> SpanToDictionary()
         {
-            Range.AsSpan().ToDictionary(i => i).Consume(Helper.Consumer);
+            return Range.AsSpan().ToDictionary(i => i);
         }
 
         [Benchmark, BenchmarkCategory("System", "ToDictionary")]
-        public void SystemToDictionary()
+        public Dictionary<int, int> SystemToDictionary()
         {
-            Range.ToDictionary(i => i).Consume(Helper.Consumer);
+            return Range.ToDictionary(i => i);
         }
     }
 }

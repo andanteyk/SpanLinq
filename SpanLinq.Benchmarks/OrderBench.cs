@@ -21,13 +21,13 @@ namespace SpanLinq.Benchmarks
 
 
         [Benchmark, BenchmarkCategory("Span", "OrderDescending")]
-        public void SpanOrderByDescending()
+        public void SpanOrderDescending()
         {
             Range.AsSpan().OrderDescending().Consume(Helper.Consumer);
         }
 
         [Benchmark, BenchmarkCategory("System", "OrderDescending")]
-        public void SystemOrderByDescending()
+        public void SystemOrderDescending()
         {
             Range.OrderDescending().Consume(Helper.Consumer);
         }

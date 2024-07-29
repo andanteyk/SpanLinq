@@ -88,7 +88,7 @@ namespace SpanLinq
         internal TOperator2 Operator2;
         internal TComparer Comparer;
 #nullable disable   // TODO: avoid CS8714
-        internal ArrayPoolDictionary<TIn, byte> Dictionary;
+        internal ArrayPoolDictionary<TIn, Unit> Dictionary;
 #nullable restore
         internal bool ExistsNull;
 
@@ -136,6 +136,7 @@ namespace SpanLinq
                 var current1 = Operator1.TryMoveNext(ref source1, out bool ok);
                 if (!ok)
                 {
+                    Dispose();
                     break;
                 }
 

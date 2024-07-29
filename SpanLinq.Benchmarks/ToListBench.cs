@@ -8,15 +8,15 @@ namespace SpanLinq.Benchmarks
         private int[] Range = Enumerable.Range(0, Helper.DefaultSequenceLength).ToArray();
 
         [Benchmark, BenchmarkCategory("Span", "ToList")]
-        public void SpanToList()
+        public List<int> SpanToList()
         {
-            Range.AsSpan().ToList().Consume(Helper.Consumer);
+            return Range.AsSpan().ToList();
         }
 
         [Benchmark, BenchmarkCategory("System", "ToList")]
-        public void SystemToList()
+        public List<int> SystemToList()
         {
-            Range.ToList().Consume(Helper.Consumer);
+            return Range.ToList();
         }
     }
 }

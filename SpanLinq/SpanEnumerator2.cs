@@ -49,15 +49,17 @@ namespace SpanLinq
             return ToArrayPool(Source1, Source2, Operator, out poolingArray);
         }
 
-        public SpanIterator<TOut> AsSpan()
+        public IterateOnceBuffer<TOut> AsSpan()
         {
-            return this;
+            var span = ToArrayPool(out var poolingArray);
+            return new IterateOnceBuffer<TOut>(poolingArray, span.Length);
         }
 
-        public static implicit operator SpanIterator<TOut>(SpanEnumerator2<TSource1, TSource2, TOut, TOperator> enumerator2)
+        public SpanEnumerator<TOut, TOut, IdentityWithDisposeOperator<TOut, IterateOnceBuffer<TOut>>> ToEnumerator()
         {
-            var span = enumerator2.ToArrayPool(out var poolingArray);
-            return new SpanIterator<TOut>(poolingArray, span.Length);
+            var span = ToArrayPool(out var poolingArray);
+            var buffer = new IterateOnceBuffer<TOut>(poolingArray, span.Length);
+            return new SpanEnumerator<TOut, TOut, IdentityWithDisposeOperator<TOut, IterateOnceBuffer<TOut>>>(buffer, new(buffer));
         }
     }
 }

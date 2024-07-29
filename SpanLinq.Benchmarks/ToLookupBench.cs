@@ -8,15 +8,15 @@ namespace SpanLinq.Benchmarks
         private int[] Range = Enumerable.Range(0, Helper.DefaultSequenceLength).ToArray();
 
         [Benchmark, BenchmarkCategory("Span", "ToLookup")]
-        public void SpanToLookup()
+        public ILookup<int, int> SpanToLookup()
         {
-            Range.AsSpan().ToLookup(i => i).Consume(Helper.Consumer);
+            return Range.AsSpan().ToLookup(i => i);
         }
 
         [Benchmark, BenchmarkCategory("System", "ToLookup")]
-        public void SystemToLookup()
+        public ILookup<int, int> SystemToLookup()
         {
-            Range.ToLookup(i => i).Consume(Helper.Consumer);
+            return Range.ToLookup(i => i);
         }
     }
 }

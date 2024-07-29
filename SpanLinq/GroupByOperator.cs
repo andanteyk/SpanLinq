@@ -199,6 +199,7 @@ namespace SpanLinq
             }
             else
             {
+                Dispose();
                 success = false;
                 return default!;
             }

@@ -53,19 +53,8 @@ namespace SpanLinq
 
         public SpanIterator<TOut> AsSpan()
         {
-            return this;
-        }
-
-        public static implicit operator SpanIterator<TOut>(SpanEnumerator3<TSource1, TSource2, TSource3, TOut, TOperator> enumerator3)
-        {
-            var span = enumerator3.ToArrayPool(out var poolingArray);
+            var span = ToArrayPool(out var poolingArray);
             return new SpanIterator<TOut>(poolingArray, span.Length);
         }
-    }
-
-    public interface ISpanOperator3<TIn1, TIn2, TIn3, TOut>
-    {
-        TOut TryMoveNext(ref ReadOnlySpan<TIn1> source1, ref ReadOnlySpan<TIn2> source2, ref ReadOnlySpan<TIn3> source3, out bool success);
-        bool TryGetNonEnumeratedCount(ReadOnlySpan<TIn1> source1, ReadOnlySpan<TIn2> source2, ReadOnlySpan<TIn3> source3, out int length);
     }
 }

@@ -1,12 +1,13 @@
 ﻿
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
+using BenchmarkDotNet.Filters;
 using BenchmarkDotNet.Order;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Validators;
-using SpanLinq.Benchmarks;
 
 var config = DefaultConfig.Instance
+//    .AddFilter(new AnyCategoriesFilter(new string[] { "GroupJoin" }))
     .AddDiagnoser(MemoryDiagnoser.Default)
     .AddValidator(ExecutionValidator.FailOnError)
     .WithOrderer(new DefaultOrderer(SummaryOrderPolicy.Default, MethodOrderPolicy.Alphabetical))

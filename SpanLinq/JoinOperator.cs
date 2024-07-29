@@ -111,6 +111,11 @@ namespace SpanLinq
 
         public void Dispose()
         {
+            foreach (var pair in Dictionary)
+            {
+                pair.Value.Dispose();
+            }
+
             Dictionary?.Dispose();
             CurrentInners?.Dispose();
             CurrentInners = null;

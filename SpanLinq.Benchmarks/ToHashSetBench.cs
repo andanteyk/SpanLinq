@@ -8,15 +8,15 @@ namespace SpanLinq.Benchmarks
         private int[] Range = Enumerable.Range(0, Helper.DefaultSequenceLength).ToArray();
 
         [Benchmark, BenchmarkCategory("Span", "ToHashSet")]
-        public void SpanToHashSet()
+        public HashSet<int> SpanToHashSet()
         {
-            Range.AsSpan().ToHashSet().Consume(Helper.Consumer);
+            return Range.AsSpan().ToHashSet();
         }
 
         [Benchmark, BenchmarkCategory("System", "ToHashSet")]
-        public void SystemToHashSet()
+        public HashSet<int> SystemToHashSet()
         {
-            Range.ToHashSet().Consume(Helper.Consumer);
+            return Range.ToHashSet();
         }
     }
 }
