@@ -91,10 +91,8 @@ namespace SpanLinq
         internal readonly Func<TOuter, IEnumerable<TInner>, TResult> ResultSelector;
         internal readonly TComparer Comparer;
 
-#nullable disable   // TODO: avoid CS8714
-        internal ArrayPoolDictionary<TKey, ArrayPoolList<TInner>> Dictionary;
-#nullable restore
-        internal ArrayPoolList<TInner>? NullList;
+        internal ArrayPoolDictionary<TKey, ArrayPoolList<TInner>>? Dictionary;
+        internal bool Initialized;
 
         internal GroupJoinOperator(TOperator1 op1, TOperator2 op2, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector, TComparer comparer)
         {
@@ -106,12 +104,13 @@ namespace SpanLinq
             Comparer = comparer;
 
             Dictionary = null;
-            NullList = null;
+            Initialized = false;
         }
 
         private void CreateDictionary(ref ReadOnlySpan<TSpan2> source2)
         {
-            Dictionary = new(Comparer);
+            Dictionary = ObjectPool.SharedRent<ArrayPoolDictionary<TKey, ArrayPoolList<TInner>>>();
+            Dictionary.ClearAndSetComparer(Comparer);
 
             while (true)
             {
@@ -122,23 +121,20 @@ namespace SpanLinq
                 }
 
                 var current2Key = InnerKeySelector(current2);
-                if (current2Key == null)
+                if (Dictionary.TryGetValue(current2Key, out var list))
                 {
-                    NullList ??= new();
-                    NullList.Add(current2);
+                    list.Add(current2);
                 }
                 else
                 {
-                    if (Dictionary.ContainsKey(current2Key))
-                    {
-                        Dictionary[current2Key].Add(current2);
-                    }
-                    else
-                    {
-                        Dictionary[current2Key] = new() { current2 };
-                    }
+                    list = ObjectPool.SharedRent<ArrayPoolList<TInner>>();
+                    list.Clear();
+                    list.Add(current2);
+                    Dictionary[current2Key] = list;
                 }
             }
+
+            Initialized = true;
         }
 
         public bool TryGetNonEnumeratedCount(ReadOnlySpan<TSpan1> source1, ReadOnlySpan<TSpan2> source2, out int length)
@@ -148,7 +144,7 @@ namespace SpanLinq
 
         public TResult TryMoveNext(ref ReadOnlySpan<TSpan1> source1, ref ReadOnlySpan<TSpan2> source2, out bool success)
         {
-            if (Dictionary == null)
+            if (!Initialized)
             {
                 CreateDictionary(ref source2);
             }
@@ -163,41 +159,29 @@ namespace SpanLinq
 
             var current1Key = OuterKeySelector(current1);
 
-            if (current1Key == null)
+
+            success = true;
+            if (Dictionary!.TryGetValue(current1Key, out var list))
             {
-                success = true;
-                if (NullList != null)
-                {
-                    return ResultSelector(current1, NullList);
-                }
-                else
-                {
-                    return ResultSelector(current1, Array.Empty<TInner>());
-                }
+                return ResultSelector(current1, list);
             }
             else
             {
-                success = true;
-                if (Dictionary!.TryGetValue(current1Key, out var list))
-                {
-                    return ResultSelector(current1, list);
-                }
-                else
-                {
-                    return ResultSelector(current1, Array.Empty<TInner>());
-                }
+                return ResultSelector(current1, Array.Empty<TInner>());
             }
         }
 
         public void Dispose()
         {
-            foreach (var pair in Dictionary)
+            if (Dictionary != null)
             {
-                pair.Value.Dispose();
+                foreach (var pair in Dictionary)
+                {
+                    ObjectPool.SharedReturn(pair.Value);
+                }
+                ObjectPool.SharedReturn(Dictionary);
+                Dictionary = null;
             }
-            Dictionary?.Dispose();
-            NullList?.Dispose();
-            NullList = null;
         }
     }
 }

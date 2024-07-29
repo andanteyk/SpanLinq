@@ -49,7 +49,7 @@ namespace SpanLinq
             }
             else
             {
-                m_Array = ArrayPool<T>.Shared.Rent(m_Length = 4);
+                m_Array = ArrayPool<T>.Shared.Rent(m_Length = 16);
                 int i = 0;
                 foreach (var element in original)
                 {

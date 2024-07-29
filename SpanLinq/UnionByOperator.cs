@@ -1,5 +1,3 @@
-using System.ComponentModel.Design;
-
 namespace SpanLinq
 {
     public static partial class SpanEnumerable
@@ -90,10 +88,8 @@ namespace SpanLinq
         internal TOperator2 Operator2;
         internal Func<TIn, TKey> KeySelector;
         internal readonly TComparer Comparer;
-#nullable disable
-        internal ArrayPoolDictionary<TKey, byte> Dictionary;
-#nullable restore
-        internal bool ExistsNull;
+        internal ArrayPoolDictionary<TKey, Unit>? Dictionary;
+        internal bool Initialized;
 
         internal UnionByOperator(TOperator1 operator1, TOperator2 operator2, Func<TIn, TKey> keySelector, TComparer comparer)
         {
@@ -102,12 +98,16 @@ namespace SpanLinq
             KeySelector = keySelector;
             Comparer = comparer;
             Dictionary = null;
-            ExistsNull = false;
+            Initialized = false;
         }
 
         public void Dispose()
         {
-            Dictionary?.Dispose();
+            if (Dictionary != null)
+            {
+                ObjectPool.SharedReturn(Dictionary);
+                Dictionary = null;
+            }
         }
 
         public bool TryGetNonEnumeratedCount(ReadOnlySpan<TSpan1> source1, ReadOnlySpan<TSpan2> source2, out int length)
@@ -120,9 +120,11 @@ namespace SpanLinq
         {
             bool ok;
 
-            if (Dictionary == null)
+            if (!Initialized)
             {
-                Dictionary = new(Comparer);
+                Dictionary = ObjectPool.SharedRent<ArrayPoolDictionary<TKey, Unit>>();
+                Dictionary.ClearAndSetComparer(Comparer);
+                Initialized = true;
             }
 
             do
@@ -132,23 +134,11 @@ namespace SpanLinq
                 {
                     var key = KeySelector(current1);
 
-                    if (key == null)
+                    if (!Dictionary!.TryGetValue(key, out _))
                     {
-                        if (!ExistsNull)
-                        {
-                            ExistsNull = true;
-                            success = true;
-                            return current1;
-                        }
-                    }
-                    else
-                    {
-                        if (!Dictionary.TryGetValue(key, out _))
-                        {
-                            Dictionary.Add(key, default);
-                            success = true;
-                            return current1;
-                        }
+                        Dictionary.Add(key, default);
+                        success = true;
+                        return current1;
                     }
                 }
             } while (ok);
@@ -160,28 +150,16 @@ namespace SpanLinq
                 {
                     var key = KeySelector(current2);
 
-                    if (key == null)
+                    if (!Dictionary!.TryGetValue(key, out _))
                     {
-                        if (!ExistsNull)
-                        {
-                            ExistsNull = true;
-                            success = true;
-                            return current2;
-                        }
-                    }
-                    else
-                    {
-                        if (!Dictionary.TryGetValue(key, out _))
-                        {
-                            Dictionary.Add(key, default);
-                            success = true;
-                            return current2;
-                        }
+                        Dictionary.Add(key, default);
+                        success = true;
+                        return current2;
                     }
                 }
             } while (ok);
 
-
+            Dispose();
             success = false;
             return default!;
         }

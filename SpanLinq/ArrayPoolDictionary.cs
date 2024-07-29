@@ -10,14 +10,13 @@ using System.Runtime.InteropServices;
 namespace SpanLinq
 {
     public sealed partial class ArrayPoolDictionary<TKey, TValue> :
-            ICollection<KeyValuePair<TKey, TValue>>,
-            IDictionary<TKey, TValue>,
-            IEnumerable<KeyValuePair<TKey, TValue>>,
-            IReadOnlyCollection<KeyValuePair<TKey, TValue>>,
-            IReadOnlyDictionary<TKey, TValue>,
-            IDictionary,
-            IDisposable
-            where TKey : notnull
+        ICollection<KeyValuePair<TKey, TValue>>,
+        IDictionary<TKey, TValue>,
+        IEnumerable<KeyValuePair<TKey, TValue>>,
+        IReadOnlyCollection<KeyValuePair<TKey, TValue>>,
+        IReadOnlyDictionary<TKey, TValue>,
+        IDictionary,
+        IDisposable
     {
 
         private readonly record struct Metadata(uint Fingerprint, int ValueIndex)
@@ -34,7 +33,7 @@ namespace SpanLinq
         private int m_Size;
         private int m_Shifts = 32 - 2;
 
-        private readonly IEqualityComparer<TKey>? m_Comparer;
+        private IEqualityComparer<TKey>? m_Comparer;
 
 
         private const int DistanceUnit = 0x100;
@@ -357,6 +356,12 @@ namespace SpanLinq
         public bool TryAdd(TKey key, TValue value)
         {
             return AddEntry(key, value, false);
+        }
+
+        public void ClearAndSetComparer(IEqualityComparer<TKey> comparer)
+        {
+            ClearTable();
+            m_Comparer = comparer;
         }
 
 

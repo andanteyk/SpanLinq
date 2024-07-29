@@ -1,81 +1,72 @@
 using System.Buffers;
+using Microsoft.Diagnostics.Tracing.Parsers.Clr;
 
 namespace SpanLinq
 {
-    public class ObjectPool<T> where T : class
+    public class ObjectPool<T>
+        where T : class, new()
     {
         [ThreadStatic]
         private static ObjectPool<T>? shared = null;
         public static ObjectPool<T> Shared => shared ??= new ObjectPool<T>();
 
-        private enum UsedFlags : byte
-        {
-            Unused,
-            Used,
-        }
 
-        private T[] Pool;
-        private UsedFlags[] Used;
-        private int StartIndex;
+        private T?[] Pool;
 
         private ObjectPool()
         {
-            Pool = ArrayPool<T>.Shared.Rent(16);
-            Used = ArrayPool<UsedFlags>.Shared.Rent(16);
-            Used.AsSpan().Fill(UsedFlags.Unused);
-            StartIndex = -1;
+            Pool = ArrayPool<T?>.Shared.Rent(16);
+            Pool.AsSpan().Clear();
         }
 
         public T Rent()
         {
-            StartIndex++;
-            for (int offset = 0; offset < Pool.Length; offset++)
+            for (int i = 0; i < Pool.Length; i++)
             {
-                int i = (StartIndex + offset) & (Pool.Length - 1);
-
-                if (Used[i] == UsedFlags.Unused)
+                if (!ReferenceEquals(Pool[i], null))
                 {
-                    Used[i] = UsedFlags.Used;
-                    return Pool[i];
+                    var result = Pool[i];
+                    Pool[i] = null;
+                    return result!;
                 }
             }
 
-
-            var newPool = ArrayPool<T>.Shared.Rent(Pool.Length << 1);
-            var newUsed = ArrayPool<UsedFlags>.Shared.Rent(Used.Length << 1);
-            var oldPool = Pool;
-            var oldUsed = Used;
-
-            oldPool.AsSpan().CopyTo(newPool);
-            oldUsed.AsSpan().CopyTo(newUsed);
-            Pool = newPool;
-            Used = newUsed;
-            int index = oldPool.Length;
-
-            ArrayPool<T>.Shared.Return(oldPool);
-            ArrayPool<UsedFlags>.Shared.Return(oldUsed);
-
-
-            Used[index] = UsedFlags.Used;
-            return Pool[index];
+            return new();
         }
 
         public void Return(T value)
         {
             for (int i = 0; i < Pool.Length; i++)
             {
-                if (Used[i] == UsedFlags.Used)
+                if (ReferenceEquals(Pool[i], null))
                 {
-                    if (ReferenceEquals(Pool[i], value))
-                    {
-                        Used[i] = UsedFlags.Unused;
-                        return;
-                    }
+                    Pool[i] = value;
+                    return;
                 }
             }
 
-            throw new InvalidOperationException();
-        }
+            var newPool = ArrayPool<T>.Shared.Rent(Pool.Length << 1);
+            var oldPool = Pool;
 
+            oldPool.AsSpan().CopyTo(newPool);
+            Pool = newPool;
+            Pool[oldPool.Length] = value;
+
+            ArrayPool<T?>.Shared.Return(oldPool);
+        }
+    }
+
+    public static class ObjectPool
+    {
+        public static TRent SharedRent<TRent>()
+            where TRent : class, new()
+        {
+            return ObjectPool<TRent>.Shared.Rent();
+        }
+        public static void SharedReturn<TReturn>(TReturn value)
+            where TReturn : class, new()
+        {
+            ObjectPool<TReturn>.Shared.Return(value);
+        }
     }
 }

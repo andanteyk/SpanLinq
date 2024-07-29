@@ -151,12 +151,10 @@ namespace SpanLinq
         internal readonly Func<TIn, TKey> KeySelector;
         internal readonly Func<TIn, TElement> ElementSelector;
         internal readonly Func<TKey, IList<TElement>, TOut> ResultSelector;
-        internal ArrayPoolList<TElement>? NullKeys;
-#nullable disable   // TODO: avoid CS8714
-        internal ArrayPoolDictionary<TKey, ArrayPoolList<TElement>> Dictionary;
-        internal ArrayPoolDictionary<TKey, ArrayPoolList<TElement>>.Enumerator DictionaryEnumerator;
-#nullable restore
         internal readonly TComparer Comparer;
+
+        internal ArrayPoolDictionary<TKey, ArrayPoolList<TElement>>? Dictionary;
+        internal ArrayPoolDictionary<TKey, ArrayPoolList<TElement>>.Enumerator DictionaryEnumerator;
 
         internal GroupByOperator(TOperator op, Func<TIn, TKey> keySelector, Func<TIn, TElement> elementSelector, Func<TKey, IList<TElement>, TOut> resultSelector, TComparer comparer)
         {
@@ -164,7 +162,6 @@ namespace SpanLinq
             KeySelector = keySelector;
             ElementSelector = elementSelector;
             ResultSelector = resultSelector;
-            NullKeys = null!;
             Dictionary = null!;
             DictionaryEnumerator = default;
             Comparer = comparer;
@@ -183,15 +180,6 @@ namespace SpanLinq
                 DoGrouping(ref source);
             }
 
-            if (NullKeys != null)
-            {
-                success = true;
-                var result = ResultSelector(default!, NullKeys);
-                NullKeys.Dispose();
-                NullKeys = null;
-                return result;
-            }
-
             if (DictionaryEnumerator.MoveNext())
             {
                 success = true;
@@ -207,7 +195,8 @@ namespace SpanLinq
 
         private void DoGrouping(ref ReadOnlySpan<TSpan> source)
         {
-            Dictionary = new(Comparer);
+            Dictionary = ObjectPool.SharedRent<ArrayPoolDictionary<TKey, ArrayPoolList<TElement>>>();
+            Dictionary.ClearAndSetComparer(Comparer);
 
             while (true)
             {
@@ -220,18 +209,16 @@ namespace SpanLinq
                 var key = KeySelector(current);
                 var element = ElementSelector(current);
 
-                if (key == null)
-                {
-                    NullKeys ??= new();
-                    NullKeys.Add(element);
-                }
-                else if (Dictionary.TryGetValue(key, out var values))
+                if (Dictionary.TryGetValue(key, out var values))
                 {
                     values.Add(element);
                 }
                 else
                 {
-                    Dictionary.Add(key, new ArrayPoolList<TElement>() { element });
+                    values = ObjectPool.SharedRent<ArrayPoolList<TElement>>();
+                    values.Clear();
+                    values.Add(element);
+                    Dictionary.Add(key, values);
                 }
             }
 
@@ -244,15 +231,10 @@ namespace SpanLinq
             {
                 foreach (var pair in Dictionary)
                 {
-                    pair.Value.Dispose();
+                    ObjectPool.SharedReturn(pair.Value);
                 }
-                Dictionary.Dispose();
-                Dictionary = null!;
-            }
-            if (NullKeys != null)
-            {
-                NullKeys.Dispose();
-                NullKeys = null;
+                ObjectPool.SharedReturn(Dictionary);
+                Dictionary = null;
             }
         }
     }

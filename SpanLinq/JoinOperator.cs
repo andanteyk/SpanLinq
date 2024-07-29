@@ -1,3 +1,5 @@
+using System.Transactions;
+
 namespace SpanLinq
 {
     public static partial class SpanEnumerable
@@ -90,11 +92,10 @@ namespace SpanLinq
         internal Func<TInner, TKey> InnerKeySelector;
         internal Func<TOuter, TInner, TResult> ResultSelector;
         internal readonly TComparer Comparer;
-#nullable disable   // TODO: avoid CS8714
-        internal ArrayPoolDictionary<TKey, ArrayPoolList<TInner>> Dictionary;
-#nullable restore
+        internal ArrayPoolDictionary<TKey, ArrayPoolList<TInner>>? Dictionary;
         internal TOuter CurrentOuter;
         internal ArrayPoolList<TInner>? CurrentInners;
+        internal bool Initialized;
 
         internal JoinOperator(TOperator1 operator1, TOperator2 operator2, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector, TComparer comparer)
         {
@@ -107,18 +108,26 @@ namespace SpanLinq
             Dictionary = null;
             CurrentOuter = default!;
             CurrentInners = null;
+            Initialized = false;
         }
 
         public void Dispose()
         {
-            foreach (var pair in Dictionary)
+            if (Dictionary != null)
             {
-                pair.Value.Dispose();
+                foreach (var pair in Dictionary)
+                {
+                    ObjectPool.SharedReturn(pair.Value);
+                }
+                ObjectPool.SharedReturn(Dictionary);
+                Dictionary = null;
             }
 
-            Dictionary?.Dispose();
-            CurrentInners?.Dispose();
-            CurrentInners = null;
+            if (CurrentInners != null)
+            {
+                ObjectPool.SharedReturn(CurrentInners);
+                CurrentInners = null;
+            }
         }
 
         public bool TryGetNonEnumeratedCount(ReadOnlySpan<TSpan1> source1, ReadOnlySpan<TSpan2> source2, out int length)
@@ -131,10 +140,12 @@ namespace SpanLinq
         {
             bool ok;
 
-            if (Dictionary == null)
+            if (!Initialized)
             {
-                Dictionary = new(Comparer);
-                CurrentInners = new();
+                Dictionary = ObjectPool.SharedRent<ArrayPoolDictionary<TKey, ArrayPoolList<TInner>>>();
+                Dictionary.ClearAndSetComparer(Comparer);
+                CurrentInners = ObjectPool.SharedRent<ArrayPoolList<TInner>>();
+                CurrentInners.Clear();
 
                 while (true)
                 {
@@ -151,9 +162,14 @@ namespace SpanLinq
                     }
                     else
                     {
-                        Dictionary[current2Key] = new() { current2 };
+                        list = ObjectPool<ArrayPoolList<TInner>>.Shared.Rent();
+                        list.Clear();
+                        list.Add(current2);
+                        Dictionary[current2Key] = list;
                     }
                 }
+
+                Initialized = true;
             }
 
             if (CurrentInners == null)
@@ -175,7 +191,7 @@ namespace SpanLinq
                     }
                     var current1Key = OuterKeySelector(current1);
 
-                    if (Dictionary.TryGetValue(current1Key, out var list))
+                    if (Dictionary!.TryGetValue(current1Key, out var list))
                     {
                         CurrentOuter = current1;
                         CurrentInners.AddRange(list);

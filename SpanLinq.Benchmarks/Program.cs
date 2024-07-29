@@ -7,7 +7,7 @@ using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Validators;
 
 var config = DefaultConfig.Instance
-//    .AddFilter(new AnyCategoriesFilter(new string[] { "GroupJoin" }))
+//    .AddFilter(new AnyCategoriesFilter(new string[] { "GroupBy" }))
     .AddDiagnoser(MemoryDiagnoser.Default)
     .AddValidator(ExecutionValidator.FailOnError)
     .WithOrderer(new DefaultOrderer(SummaryOrderPolicy.Default, MethodOrderPolicy.Alphabetical))
