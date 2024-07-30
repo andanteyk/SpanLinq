@@ -87,23 +87,25 @@ namespace SpanLinq
         internal TOperator1 Operator1;
         internal TOperator2 Operator2;
         internal TComparer Comparer;
-#nullable disable   // TODO: avoid CS8714
-        internal ArrayPoolDictionary<TIn, Unit> Dictionary;
-#nullable restore
-        internal bool ExistsNull;
+
+        internal ArrayPoolDictionary<TIn, Unit>? Dictionary;
 
         internal ExceptOperator(TOperator1 op1, TOperator2 op2, TComparer comparer)
         {
             Operator1 = op1;
             Operator2 = op2;
-            ExistsNull = false;
             Comparer = comparer;
+
             Dictionary = null;
         }
 
         public void Dispose()
         {
-            Dictionary?.Dispose();
+            if (Dictionary != null)
+            {
+                ObjectPool.SharedReturn(Dictionary);
+                Dictionary = null;
+            }
         }
 
         public bool TryGetNonEnumeratedCount(ReadOnlySpan<TSpan1> source1, ReadOnlySpan<TSpan2> source2, out int length)
@@ -116,8 +118,8 @@ namespace SpanLinq
         {
             if (Dictionary == null)
             {
-                Operator2.TryGetNonEnumeratedCount(source2, out int length2);
-                Dictionary = new(length2, Comparer);
+                Dictionary = ObjectPool.SharedRent<ArrayPoolDictionary<TIn, Unit>>();
+                Dictionary.ClearAndSetComparer(Comparer);
 
                 while (true)
                 {

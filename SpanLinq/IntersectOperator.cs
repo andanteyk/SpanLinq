@@ -87,23 +87,27 @@ namespace SpanLinq
         internal TOperator1 Operator1;
         internal TOperator2 Operator2;
         internal readonly TComparer Comparer;
-#nullable disable   // TODO: avoid CS8714
-        internal ArrayPoolDictionary<TIn, byte> Dictionary;
-#nullable restore
-        internal bool ExistsNull;
+
+        internal ArrayPoolDictionary<TIn, Unit>? Dictionary;
+        internal bool Initialized;
 
         internal IntersectOperator(TOperator1 operator1, TOperator2 operator2, TComparer comparer)
         {
             Operator1 = operator1;
             Operator2 = operator2;
             Comparer = comparer;
+
             Dictionary = null;
-            ExistsNull = false;
+            Initialized = false;
         }
 
         public void Dispose()
         {
-            Dictionary?.Dispose();
+            if (Dictionary != null)
+            {
+                ObjectPool.SharedReturn(Dictionary);
+                Dictionary = null;
+            }
         }
 
         public bool TryGetNonEnumeratedCount(ReadOnlySpan<TSpan1> source1, ReadOnlySpan<TSpan2> source2, out int length)
@@ -116,9 +120,10 @@ namespace SpanLinq
         {
             bool ok;
 
-            if (Dictionary == null)
+            if (!Initialized)
             {
-                Dictionary = new(Comparer);
+                Dictionary = ObjectPool.SharedRent<ArrayPoolDictionary<TIn, Unit>>();
+                Dictionary.ClearAndSetComparer(Comparer);
 
                 while (true)
                 {
@@ -128,15 +133,9 @@ namespace SpanLinq
                         break;
                     }
 
-                    if (current2 == null)
-                    {
-                        ExistsNull = true;
-                    }
-                    else
-                    {
-                        Dictionary[current2] = 0;
-                    }
+                    Dictionary[current2] = default;
                 }
+                Initialized = true;
             }
 
             while (true)
@@ -149,16 +148,7 @@ namespace SpanLinq
                     return default!;
                 }
 
-                if (current1 == null)
-                {
-                    if (ExistsNull)
-                    {
-                        ExistsNull = false;
-                        success = true;
-                        return current1;
-                    }
-                }
-                else if (Dictionary.Remove(current1))
+                if (Dictionary!.Remove(current1))
                 {
                     success = true;
                     return current1;

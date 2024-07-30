@@ -103,18 +103,25 @@ namespace SpanLinq
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetHashCode(TKey key, IEqualityComparer<TKey>? comparer)
         {
-            if (typeof(TKey).IsValueType)
+            if (key is { } notnullKey)
             {
-                if (comparer == null)
+                if (typeof(TKey).IsValueType)
                 {
-                    return key.GetHashCode();
-                }
+                    if (comparer == null)
+                    {
+                        return notnullKey.GetHashCode();
+                    }
 
-                return comparer.GetHashCode(key);
+                    return comparer.GetHashCode(notnullKey);
+                }
+                else
+                {
+                    return comparer!.GetHashCode(notnullKey);
+                }
             }
             else
             {
-                return comparer!.GetHashCode(key);
+                return 0;
             }
         }
 
@@ -333,7 +340,7 @@ namespace SpanLinq
             {
                 At(values, valueIndex) = At(values, m_Size - 1);
 
-                int movingHashCode = At(values, valueIndex).Key.GetHashCode();
+                int movingHashCode = GetHashCode(At(values, valueIndex).Key, m_Comparer);
                 int movingMetadataIndex = HashCodeToMetadataIndex(movingHashCode, m_Shifts);
 
                 int valueIndexBack = m_Size - 1;
@@ -530,7 +537,7 @@ namespace SpanLinq
 
                 public TKey Current => m_Parent.m_Values[m_Index].Key;
 
-                object IEnumerator.Current => Current;
+                object? IEnumerator.Current => Current;
 
                 public void Dispose()
                 {
@@ -751,7 +758,7 @@ namespace SpanLinq
             return RemoveEntry(key);
         }
 
-        public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
+        public bool TryGetValue(TKey key, out TValue value)
         {
             if (GetEntryIndex(key) is int index && index >= 0)
             {
@@ -823,9 +830,9 @@ namespace SpanLinq
 
             public KeyValuePair<TKey, TValue> Current => m_Parent.m_Values[m_Index];
 
-            public DictionaryEntry Entry => new DictionaryEntry(Current.Key, Current.Value);
+            public DictionaryEntry Entry => new DictionaryEntry(Current.Key!, Current.Value);
 
-            public object Key => Current.Key;
+            public object Key => Current.Key!;
 
             public object? Value => Current.Value;
 

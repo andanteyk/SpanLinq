@@ -92,10 +92,8 @@ namespace SpanLinq
         internal TOperator2 Operator2;
         internal Func<TIn, TKey> KeySelector;
         internal TComparer Comparer;
-#nullable disable   // TODO: avoid CS8714
-        internal ArrayPoolDictionary<TKey, Unit> Dictionary;
-#nullable restore
-        internal bool ExistsNull;
+
+        internal ArrayPoolDictionary<TKey, Unit>? Dictionary;
 
         internal ExceptByOperator(TOperator1 op1, TOperator2 op2, Func<TIn, TKey> keySelector, TComparer comparer)
         {
@@ -105,12 +103,15 @@ namespace SpanLinq
             KeySelector = keySelector;
 
             Dictionary = null;
-            ExistsNull = false;
         }
 
         public void Dispose()
         {
-            Dictionary?.Dispose();
+            if (Dictionary != null)
+            {
+                ObjectPool.SharedReturn(Dictionary);
+                Dictionary = null;
+            }
         }
 
         public bool TryGetNonEnumeratedCount(ReadOnlySpan<TSpan1> source1, ReadOnlySpan<TSpan2> source2, out int length)
@@ -123,7 +124,8 @@ namespace SpanLinq
         {
             if (Dictionary == null)
             {
-                Dictionary = new(Comparer);
+                Dictionary = ObjectPool.SharedRent<ArrayPoolDictionary<TKey, Unit>>();
+                Dictionary.ClearAndSetComparer(Comparer);
 
                 while (true)
                 {
@@ -133,14 +135,7 @@ namespace SpanLinq
                         break;
                     }
 
-                    if (current2 == null)
-                    {
-                        ExistsNull = true;
-                    }
-                    else
-                    {
-                        Dictionary[current2] = default;
-                    }
+                    Dictionary[current2] = default;
                 }
             }
 
@@ -155,19 +150,6 @@ namespace SpanLinq
                 }
 
                 var current1Key = KeySelector(current1);
-                if (current1Key == null)
-                {
-                    if (ExistsNull)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        ExistsNull = true;
-                        success = true;
-                        return default!;
-                    }
-                }
                 if (Dictionary.TryAdd(current1Key, default))
                 {
                     success = true;

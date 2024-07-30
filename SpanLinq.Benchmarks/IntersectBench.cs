@@ -10,7 +10,7 @@ namespace SpanLinq.Benchmarks
         [Benchmark, BenchmarkCategory("Span", "Intersect")]
         public void SpanIntersect()
         {
-            Range.AsSpan().Intersect(Range).AsSpan().Consume(Helper.Consumer);
+            Range.AsSpan().Intersect(Range).ToEnumerator().Consume(Helper.Consumer);
         }
 
         [Benchmark, BenchmarkCategory("System", "Intersect")]

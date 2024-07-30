@@ -87,10 +87,9 @@ namespace SpanLinq
         internal TOperator1 Operator1;
         internal TOperator2 Operator2;
         internal readonly TComparer Comparer;
-#nullable disable
-        internal ArrayPoolDictionary<TIn, byte> Dictionary;
-#nullable restore
-        internal bool ExistsNull;
+
+        internal ArrayPoolDictionary<TIn, Unit>? Dictionary;
+        internal bool Initialized;
 
         internal UnionOperator(TOperator1 operator1, TOperator2 operator2, TComparer comparer)
         {
@@ -98,12 +97,16 @@ namespace SpanLinq
             Operator2 = operator2;
             Comparer = comparer;
             Dictionary = null;
-            ExistsNull = false;
+            Initialized = false;
         }
 
         public void Dispose()
         {
-            Dictionary?.Dispose();
+            if (Dictionary != null)
+            {
+                ObjectPool.SharedReturn(Dictionary);
+                Dictionary = null;
+            }
         }
 
         public bool TryGetNonEnumeratedCount(ReadOnlySpan<TSpan1> source1, ReadOnlySpan<TSpan2> source2, out int length)
@@ -114,9 +117,11 @@ namespace SpanLinq
 
         public TIn TryMoveNext(ref ReadOnlySpan<TSpan1> source1, ref ReadOnlySpan<TSpan2> source2, out bool success)
         {
-            if (Dictionary == null)
+            if (!Initialized)
             {
-                Dictionary = new(Comparer);
+                Dictionary = ObjectPool.SharedRent<ArrayPoolDictionary<TIn, Unit>>();
+                Dictionary.ClearAndSetComparer(Comparer);
+                Initialized = true;
             }
 
             bool ok;
@@ -126,23 +131,10 @@ namespace SpanLinq
                 var current1 = Operator1.TryMoveNext(ref source1, out ok);
                 if (ok)
                 {
-                    if (current1 == null)
+                    if (Dictionary!.TryAdd(current1, default))
                     {
-                        if (!ExistsNull)
-                        {
-                            ExistsNull = true;
-                            success = true;
-                            return current1;
-                        }
-                    }
-                    else
-                    {
-                        if (!Dictionary.TryGetValue(current1, out _))
-                        {
-                            Dictionary.Add(current1, default);
-                            success = true;
-                            return current1;
-                        }
+                        success = true;
+                        return current1;
                     }
                 }
             } while (ok);
@@ -152,23 +144,10 @@ namespace SpanLinq
                 var current2 = Operator2.TryMoveNext(ref source2, out ok);
                 if (ok)
                 {
-                    if (current2 == null)
+                    if (Dictionary!.TryAdd(current2, default))
                     {
-                        if (!ExistsNull)
-                        {
-                            ExistsNull = true;
-                            success = true;
-                            return current2;
-                        }
-                    }
-                    else
-                    {
-                        if (!Dictionary.TryGetValue(current2, out _))
-                        {
-                            Dictionary.Add(current2, default);
-                            success = true;
-                            return current2;
-                        }
+                        success = true;
+                        return current2;
                     }
                 }
             } while (ok);

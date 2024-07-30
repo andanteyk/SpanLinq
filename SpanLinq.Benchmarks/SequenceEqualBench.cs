@@ -18,5 +18,18 @@ namespace SpanLinq.Benchmarks
         {
             return Range.SequenceEqual(Range);
         }
+
+
+        [Benchmark, BenchmarkCategory("Span", "SequenceEqual")]
+        public bool SpanSequenceEqualSequence()
+        {
+            return SpanEnumerable.Range(0, Helper.DefaultSequenceLength).SequenceEqual(SpanEnumerable.Range(0, Helper.DefaultSequenceLength));
+        }
+
+        [Benchmark, BenchmarkCategory("System", "SequenceEqual")]
+        public bool SystemSequenceEqualSequence()
+        {
+            return Enumerable.Range(0, Helper.DefaultSequenceLength).SequenceEqual(Enumerable.Range(0, Helper.DefaultSequenceLength));
+        }
     }
 }

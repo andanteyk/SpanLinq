@@ -1,5 +1,3 @@
-using System.ComponentModel.Design;
-
 namespace SpanLinq
 {
     public static partial class SpanEnumerable
@@ -90,10 +88,9 @@ namespace SpanLinq
         internal TOperator2 Operator2;
         internal Func<TIn, TKey> KeySelector;
         internal readonly TComparer Comparer;
-#nullable disable
-        internal ArrayPoolDictionary<TKey, byte> Dictionary;
-#nullable restore
-        internal bool ExistsNull;
+
+        internal ArrayPoolDictionary<TKey, Unit>? Dictionary;
+        internal bool Initialized;
 
         internal IntersectByOperator(TOperator1 operator1, TOperator2 operator2, Func<TIn, TKey> keySelector, TComparer comparer)
         {
@@ -101,13 +98,18 @@ namespace SpanLinq
             Operator2 = operator2;
             KeySelector = keySelector;
             Comparer = comparer;
+
             Dictionary = null;
-            ExistsNull = false;
+            Initialized = false;
         }
 
         public void Dispose()
         {
-            Dictionary?.Dispose();
+            if (Dictionary != null)
+            {
+                ObjectPool.SharedReturn(Dictionary);
+                Dictionary = null;
+            }
         }
 
         public bool TryGetNonEnumeratedCount(ReadOnlySpan<TSpan1> source1, ReadOnlySpan<TSpan2> source2, out int length)
@@ -120,7 +122,7 @@ namespace SpanLinq
         {
             bool ok;
 
-            if (Dictionary == null)
+            if (!Initialized)
             {
                 Dictionary = new(Comparer);
 
@@ -132,15 +134,10 @@ namespace SpanLinq
                         break;
                     }
 
-                    if (current2 == null)
-                    {
-                        ExistsNull = true;
-                    }
-                    else
-                    {
-                        Dictionary[current2] = 0;
-                    }
+                    Dictionary[current2] = default;
                 }
+
+                Initialized = true;
             }
 
             while (true)
@@ -154,16 +151,7 @@ namespace SpanLinq
                 }
 
                 var current1Key = KeySelector(current1);
-                if (current1Key == null)
-                {
-                    if (ExistsNull)
-                    {
-                        ExistsNull = false;
-                        success = true;
-                        return current1;
-                    }
-                }
-                else if (Dictionary.Remove(current1Key))
+                if (Dictionary!.Remove(current1Key))
                 {
                     success = true;
                     return current1;

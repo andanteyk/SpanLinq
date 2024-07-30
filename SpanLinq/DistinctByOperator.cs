@@ -48,21 +48,15 @@ namespace SpanLinq
         internal TOperator Operator;
         internal readonly Func<TIn, TKey> KeySelector;
         internal readonly TComparer Comparer;
-        // TODO: it generates CS8714; no way to remove it without #nullable disable
-#nullable disable
-        internal ArrayPoolDictionary<TKey, TIn> Dictionary;
-        internal ArrayPoolDictionary<TKey, TIn>.Enumerator DictionaryEnumerator;
-#nullable restore
-        internal KeyValuePair<int, TIn> ExistsNull;
+
+        internal ArrayPoolDictionary<TKey, TIn>? Dictionary;
 
         internal DistinctByOperator(TOperator op, Func<TIn, TKey> keySelector, TComparer comparer)
         {
             Operator = op;
             KeySelector = keySelector;
             Comparer = comparer;
-            Dictionary = null!;
-            DictionaryEnumerator = default;
-            ExistsNull = default;
+            Dictionary = null;
         }
 
         public bool TryGetNonEnumeratedCount(ReadOnlySpan<TSpan> source, out int length)
@@ -73,55 +67,28 @@ namespace SpanLinq
 
         public TIn TryMoveNext(ref ReadOnlySpan<TSpan> source, out bool success)
         {
-            if (Dictionary == null)
+            while (true)
             {
-#nullable disable
-                Dictionary = new ArrayPoolDictionary<TKey, TIn>(Comparer);
-#nullable restore
-                while (true)
+                var current = Operator.TryMoveNext(ref source, out bool ok);
+                if (!ok)
                 {
-                    var current = Operator.TryMoveNext(ref source, out bool ok);
-                    if (!ok)
-                    {
-                        break;
-                    }
-
-                    var key = KeySelector(current);
-
-                    if (key == null)
-                    {
-                        if (ExistsNull.Key == 0)
-                        {
-                            ExistsNull = new KeyValuePair<int, TIn>(1, current);
-                        }
-                    }
-                    else if (!Dictionary.ContainsKey(key))
-                    {
-                        Dictionary.Add(key, current);
-                    }
+                    Dispose();
+                    success = false;
+                    return default!;
                 }
 
-                DictionaryEnumerator = Dictionary.GetEnumerator();
-            }
+                if (Dictionary == null)
+                {
+                    Dictionary = ObjectPool.SharedRent<ArrayPoolDictionary<TKey, TIn>>();
+                    Dictionary.ClearAndSetComparer(Comparer);
+                }
 
-            if (ExistsNull.Key == 1)
-            {
-                var value = ExistsNull.Value;
-                ExistsNull = new KeyValuePair<int, TIn>(-1, default!);
-                success = true;
-                return value;
-            }
-
-            if (DictionaryEnumerator.MoveNext())
-            {
-                success = true;
-                return DictionaryEnumerator.Current.Value;
-            }
-            else
-            {
-                Dispose();
-                success = false;
-                return default!;
+                var key = KeySelector(current);
+                if (Dictionary.TryAdd(key, current))
+                {
+                    success = true;
+                    return current;
+                }
             }
         }
 
@@ -129,7 +96,7 @@ namespace SpanLinq
         {
             if (Dictionary != null)
             {
-                Dictionary.Dispose();
+                ObjectPool.SharedReturn(Dictionary);
                 Dictionary = null!;
             }
         }

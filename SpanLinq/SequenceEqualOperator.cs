@@ -4,13 +4,13 @@ namespace SpanLinq
     {
         public static bool SequenceEqual<T>(this ReadOnlySpan<T> span, ReadOnlySpan<T> second)
         {
-            return new SpanEnumerator<T, T, IdentityOperator<T>>(span, new()).SequenceEqual(new SpanEnumerator<T, T, IdentityOperator<T>>(second, new()), EqualityComparer<T>.Default);
+            return MemoryExtensions.SequenceEqual(span, second);
         }
 
         public static bool SequenceEqual<T, TComparer>(this ReadOnlySpan<T> span, ReadOnlySpan<T> second, TComparer comparer)
             where TComparer : IEqualityComparer<T>
         {
-            return new SpanEnumerator<T, T, IdentityOperator<T>>(span, new()).SequenceEqual(new SpanEnumerator<T, T, IdentityOperator<T>>(second, new()), comparer);
+            return MemoryExtensions.SequenceEqual(span, second, comparer);
         }
 
         public static bool SequenceEqual<T, TSpan2, TOperator2>(this ReadOnlySpan<T> span, SpanEnumerator<TSpan2, T, TOperator2> second)
@@ -30,13 +30,13 @@ namespace SpanLinq
 
         public static bool SequenceEqual<T>(this Span<T> span, ReadOnlySpan<T> second)
         {
-            return new SpanEnumerator<T, T, IdentityOperator<T>>(span, new()).SequenceEqual(new SpanEnumerator<T, T, IdentityOperator<T>>(second, new()), EqualityComparer<T>.Default);
+            return MemoryExtensions.SequenceEqual(span, second);
         }
 
         public static bool SequenceEqual<T, TComparer>(this Span<T> span, ReadOnlySpan<T> second, TComparer comparer)
             where TComparer : IEqualityComparer<T>
         {
-            return new SpanEnumerator<T, T, IdentityOperator<T>>(span, new()).SequenceEqual(new SpanEnumerator<T, T, IdentityOperator<T>>(second, new()), comparer);
+            return MemoryExtensions.SequenceEqual(span, second, comparer);
         }
 
         public static bool SequenceEqual<T, TSpan2, TOperator2>(this Span<T> span, SpanEnumerator<TSpan2, T, TOperator2> second)
@@ -65,6 +65,12 @@ namespace SpanLinq
             where TOperator2 : ISpanOperator<TSpan2, TOut>
             where TComparer : IEqualityComparer<TOut>
         {
+            if (Operator.TryGetNonEnumeratedCount(Source, out int length1) && second.Operator.TryGetNonEnumeratedCount(second.Source, out int length2) &&
+                length1 != length2)
+            {
+                return false;
+            }
+
             while (true)
             {
                 var current1 = Operator.TryMoveNext(ref Source, out bool ok1);
