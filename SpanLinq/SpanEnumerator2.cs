@@ -59,7 +59,7 @@ namespace SpanLinq
         {
             var span = ToArrayPool(out var poolingArray);
             var buffer = new IterateOnceBuffer<TOut>(poolingArray, span.Length);
-            return new SpanEnumerator<TOut, TOut, IdentityWithDisposeOperator<TOut, IterateOnceBuffer<TOut>>>(buffer, new(buffer));
+            return new(buffer, new(buffer));
         }
     }
 }

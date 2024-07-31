@@ -20,10 +20,7 @@ namespace SpanLinq
         {
             if (source.Length == 0)
             {
-                if (Source is IDisposable disposable)
-                {
-                    disposable.Dispose();
-                }
+                Source.Dispose();
                 success = false;
                 return default!;
             }

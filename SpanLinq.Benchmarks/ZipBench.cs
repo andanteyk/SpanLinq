@@ -14,7 +14,7 @@ namespace SpanLinq.Benchmarks
             Range.AsSpan().Zip<int, int>(Range).AsSpan().Consume(Helper.Consumer);
         }
 
-        [Benchmark, BenchmarkCategory("System", "Where")]
+        [Benchmark, BenchmarkCategory("System", "Zip")]
         public void SystemZip()
         {
             Range.Zip(Range).Consume(Helper.Consumer);

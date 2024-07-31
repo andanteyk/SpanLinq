@@ -13,10 +13,12 @@ public class GroupByTest
         };
         var actual = SpanEnumerable.Range(0, 10).GroupBy(x => x % 3).ToArray();
 
+        /*
         foreach (var elem in actual)
         {
             System.Diagnostics.Debug.WriteLine($"{elem.Key}: [{string.Join(", ", elem)}]");
         }
+        */
 
         foreach (var pair in expected.Zip(actual))
         {

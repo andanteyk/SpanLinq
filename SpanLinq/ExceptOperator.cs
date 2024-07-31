@@ -142,9 +142,8 @@ namespace SpanLinq
                     break;
                 }
 
-                if (!Dictionary.ContainsKey(current1))
+                if (Dictionary.TryAdd(current1, default))
                 {
-                    Dictionary.Add(current1, default);
                     success = true;
                     return current1;
                 }

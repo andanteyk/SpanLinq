@@ -124,7 +124,8 @@ namespace SpanLinq
 
             if (!Initialized)
             {
-                Dictionary = new(Comparer);
+                Dictionary = ObjectPool.SharedRent<ArrayPoolDictionary<TKey, Unit>>();
+                Dictionary.ClearAndSetComparer(Comparer);
 
                 while (true)
                 {

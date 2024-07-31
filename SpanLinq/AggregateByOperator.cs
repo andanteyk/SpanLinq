@@ -96,6 +96,7 @@ namespace SpanLinq
         internal readonly TAccumulate Seed;
         internal readonly Func<TAccumulate, TIn, TAccumulate> Accumulator;
         internal readonly TComparer KeyComparer;
+
         internal ArrayPoolDictionary<TKey, TAccumulate> Dictionary;
         internal ArrayPoolDictionary<TKey, TAccumulate>.Enumerator DictionaryEnumerator;
 
@@ -134,7 +135,8 @@ namespace SpanLinq
         {
             if (Dictionary == null)
             {
-                Dictionary = new ArrayPoolDictionary<TKey, TAccumulate>(KeyComparer);
+                Dictionary = ObjectPool.SharedRent<ArrayPoolDictionary<TKey, TAccumulate>>();
+                Dictionary.ClearAndSetComparer(KeyComparer);
 
                 while (true)
                 {
@@ -175,7 +177,7 @@ namespace SpanLinq
         {
             if (Dictionary != null)
             {
-                Dictionary.Dispose();
+                ObjectPool.SharedReturn(Dictionary);
                 Dictionary = null!;
             }
         }

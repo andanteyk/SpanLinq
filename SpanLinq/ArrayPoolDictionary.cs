@@ -109,14 +109,14 @@ namespace SpanLinq
                 {
                     if (comparer == null)
                     {
-                        return notnullKey.GetHashCode();
+                        return notnullKey.GetHashCode() * -0x61C88645;  // 0x9E3779BB
                     }
 
-                    return comparer.GetHashCode(notnullKey);
+                    return comparer.GetHashCode(notnullKey) * -0x61C88645;
                 }
                 else
                 {
-                    return comparer!.GetHashCode(notnullKey);
+                    return comparer!.GetHashCode(notnullKey) * -0x61C88645;
                 }
             }
             else

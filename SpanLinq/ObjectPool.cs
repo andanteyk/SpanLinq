@@ -1,5 +1,4 @@
 using System.Buffers;
-using Microsoft.Diagnostics.Tracing.Parsers.Clr;
 
 namespace SpanLinq
 {
@@ -7,7 +6,7 @@ namespace SpanLinq
         where T : class, new()
     {
         [ThreadStatic]
-        private static ObjectPool<T>? shared = null;
+        private static ObjectPool<T>? shared;
         public static ObjectPool<T> Shared => shared ??= new ObjectPool<T>();
 
 
@@ -23,7 +22,7 @@ namespace SpanLinq
         {
             for (int i = 0; i < Pool.Length; i++)
             {
-                if (!ReferenceEquals(Pool[i], null))
+                if (Pool[i] is not null)
                 {
                     var result = Pool[i];
                     Pool[i] = null;
@@ -38,7 +37,7 @@ namespace SpanLinq
         {
             for (int i = 0; i < Pool.Length; i++)
             {
-                if (ReferenceEquals(Pool[i], null))
+                if (Pool[i] is null)
                 {
                     Pool[i] = value;
                     return;
@@ -46,6 +45,7 @@ namespace SpanLinq
             }
 
             var newPool = ArrayPool<T>.Shared.Rent(Pool.Length << 1);
+            newPool.AsSpan().Clear();
             var oldPool = Pool;
 
             oldPool.AsSpan().CopyTo(newPool);

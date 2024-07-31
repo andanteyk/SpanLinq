@@ -1,5 +1,3 @@
-using Microsoft.Diagnostics.Tracing;
-
 namespace SpanLinq
 {
     public static partial class SpanEnumerable

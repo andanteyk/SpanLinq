@@ -76,7 +76,8 @@ namespace SpanLinq
         {
             if (Dictionary == null)
             {
-                Dictionary = new ArrayPoolDictionary<TKey, int>(KeyComparer);
+                Dictionary = ObjectPool.SharedRent<ArrayPoolDictionary<TKey, int>>();
+                Dictionary.ClearAndSetComparer(KeyComparer);
 
                 while (true)
                 {
@@ -117,7 +118,7 @@ namespace SpanLinq
         {
             if (Dictionary != null)
             {
-                Dictionary.Dispose();
+                ObjectPool.SharedReturn(Dictionary);
                 Dictionary = null!;
             }
         }

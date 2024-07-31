@@ -4,7 +4,7 @@ namespace SpanLinq
     {
         public static SpanEnumerator<T, T, SkipWhileOperator<T, T, IdentityOperator<T>>> SkipWhile<T>(this ReadOnlySpan<T> span, Func<T, bool> predicate)
         {
-            return new(span, new(new(), (x, _) => predicate(x)));
+            return new(span, new(new(), predicate));
         }
 
         public static SpanEnumerator<T, T, SkipWhileOperator<T, T, IdentityOperator<T>>> SkipWhile<T>(this ReadOnlySpan<T> span, Func<T, int, bool> predicate)
@@ -14,7 +14,7 @@ namespace SpanLinq
 
         public static SpanEnumerator<T, T, SkipWhileOperator<T, T, IdentityOperator<T>>> SkipWhile<T>(this Span<T> span, Func<T, bool> predicate)
         {
-            return new(span, new(new(), (x, _) => predicate(x)));
+            return new(span, new(new(), predicate));
         }
 
         public static SpanEnumerator<T, T, SkipWhileOperator<T, T, IdentityOperator<T>>> SkipWhile<T>(this Span<T> span, Func<T, int, bool> predicate)
@@ -27,7 +27,7 @@ namespace SpanLinq
     {
         public SpanEnumerator<TSource, TOut, SkipWhileOperator<TSource, TOut, TOperator>> SkipWhile(Func<TOut, bool> predicate)
         {
-            return new(Source, new(Operator, (x, _) => predicate(x)));
+            return new(Source, new(Operator, predicate));
         }
 
         public SpanEnumerator<TSource, TOut, SkipWhileOperator<TSource, TOut, TOperator>> SkipWhile(Func<TOut, int, bool> predicate)
@@ -40,8 +40,15 @@ namespace SpanLinq
         where TOperator : ISpanOperator<TSpan, TIn>
     {
         internal TOperator Operator;
-        internal Func<TIn, int, bool> Predicate;
+        internal Delegate Predicate;
         internal int Index;
+
+        internal SkipWhileOperator(TOperator op, Func<TIn, bool> predicate)
+        {
+            Operator = op;
+            Predicate = predicate;
+            Index = -1;
+        }
 
         internal SkipWhileOperator(TOperator op, Func<TIn, int, bool> predicate)
         {
@@ -68,7 +75,15 @@ namespace SpanLinq
                         success = false;
                         return default!;
                     }
-                    if (!Predicate(current, ++Index))
+
+                    Index++;
+                    var predicateResult = Predicate switch
+                    {
+                        Func<TIn, bool> predicate => predicate(current),
+                        Func<TIn, int, bool> predicate => predicate(current, Index),
+                        _ => throw new InvalidOperationException(),     // never reach here
+                    };
+                    if (!predicateResult)
                     {
                         success = true;
                         return current;
