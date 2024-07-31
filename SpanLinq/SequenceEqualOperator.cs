@@ -4,13 +4,21 @@ namespace SpanLinq
     {
         public static bool SequenceEqual<T>(this ReadOnlySpan<T> span, ReadOnlySpan<T> second)
         {
+#if NET6_0_OR_GREATER 
             return MemoryExtensions.SequenceEqual(span, second);
+#else
+            return new SpanEnumerator<T, T, IdentityOperator<T>>(span, new()).SequenceEqual(new SpanEnumerator<T, T, IdentityOperator<T>>(second, new()), EqualityComparer<T>.Default);
+#endif
         }
 
         public static bool SequenceEqual<T, TComparer>(this ReadOnlySpan<T> span, ReadOnlySpan<T> second, TComparer comparer)
             where TComparer : IEqualityComparer<T>
         {
+#if NET6_0_OR_GREATER
             return MemoryExtensions.SequenceEqual(span, second, comparer);
+#else
+            return new SpanEnumerator<T, T, IdentityOperator<T>>(span, new()).SequenceEqual(new SpanEnumerator<T, T, IdentityOperator<T>>(second, new()), comparer);
+#endif
         }
 
         public static bool SequenceEqual<T, TSpan2, TOperator2>(this ReadOnlySpan<T> span, SpanEnumerator<TSpan2, T, TOperator2> second)
@@ -30,13 +38,21 @@ namespace SpanLinq
 
         public static bool SequenceEqual<T>(this Span<T> span, ReadOnlySpan<T> second)
         {
+#if NET6_0_OR_GREATER 
             return MemoryExtensions.SequenceEqual(span, second);
+#else
+            return new SpanEnumerator<T, T, IdentityOperator<T>>(span, new()).SequenceEqual(new SpanEnumerator<T, T, IdentityOperator<T>>(second, new()), EqualityComparer<T>.Default);
+#endif
         }
 
         public static bool SequenceEqual<T, TComparer>(this Span<T> span, ReadOnlySpan<T> second, TComparer comparer)
             where TComparer : IEqualityComparer<T>
         {
+#if NET6_0_OR_GREATER
             return MemoryExtensions.SequenceEqual(span, second, comparer);
+#else
+            return new SpanEnumerator<T, T, IdentityOperator<T>>(span, new()).SequenceEqual(new SpanEnumerator<T, T, IdentityOperator<T>>(second, new()), comparer);
+#endif
         }
 
         public static bool SequenceEqual<T, TSpan2, TOperator2>(this Span<T> span, SpanEnumerator<TSpan2, T, TOperator2> second)
