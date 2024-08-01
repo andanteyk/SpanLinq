@@ -89,8 +89,9 @@ namespace SpanLinq
                 indexes[i] = i;
             }
 
-            QuickSort(ref @this, source, indexes);
+            IntroSort(ref @this, source, indexes);
         }
+
 
         private static int CompareWithIndex<T>(ref T @this, ReadOnlySpan<TIn> source, int indexA, int indexB)
             where T : ISpanOrderOperator<TSpan, TIn>
@@ -137,18 +138,143 @@ namespace SpanLinq
         private static void QuickSort<T>(ref T @this, Span<TIn> source, Span<int> index)
             where T : ISpanOrderOperator<TSpan, TIn>
         {
-            if (index.Length <= 2)
+            if (index.Length <= 16)
             {
-                if (CompareWithIndex(ref @this, source, index[0], index[^1]) > 0)
-                {
-                    (index[0], index[^1]) = (index[^1], index[0]);
-                }
+                InsertionSort(ref @this, source, index);
                 return;
             }
 
             int p = DoPartitioning(ref @this, source, index);
             QuickSort(ref @this, source, index[..p]);
             QuickSort(ref @this, source, index[p..]);
+        }
+
+        private static void InsertionSort<T>(ref T @this, Span<TIn> source, Span<int> index)
+            where T : ISpanOrderOperator<TSpan, TIn>
+        {
+            for (int i = 1; i < index.Length; i++)
+            {
+                if (@this.Compare(source, index[i - 1], index[i]) > 0)
+                {
+                    int k = i;
+                    var temp = index[i];
+                    do
+                    {
+                        index[k] = index[k - 1];
+                        k--;
+                    } while (k > 0 && @this.Compare(source, index[k - 1], temp) > 0);
+                    index[k] = temp;
+                }
+            }
+        }
+
+        private static void HeapSort<T>(ref T @this, Span<TIn> source, Span<int> index)
+            where T : ISpanOrderOperator<TSpan, TIn>
+        {
+            static int LeftChild(int i) => 2 * i + 1;
+            static int RightChild(int i) => 2 * i + 2;
+            static int Parent(int i) => (i - 1) / 2;
+
+            static void Heapify(ref T @this, Span<TIn> source, Span<int> index)
+            {
+                int start = Parent(index.Length - 1) + 1;
+
+                while (start > 0)
+                {
+                    start--;
+                    SiftDown(ref @this, source, index, start, index.Length);
+                }
+            }
+
+            static void SiftDown(ref T @this, Span<TIn> source, Span<int> index, int start, int end)
+            {
+                int j = LeafSearch(ref @this, source, index, start, end);
+                while (CompareWithIndex(ref @this, source, index[start], index[j]) > 0)
+                {
+                    j = Parent(j);
+                }
+                while (j > start)
+                {
+                    (index[start], index[j]) = (index[j], index[start]);
+                    j = Parent(j);
+                }
+            }
+
+            static int LeafSearch(ref T @this, Span<TIn> source, Span<int> index, int i, int end)
+            {
+                int j = i;
+                while (RightChild(j) < end)
+                {
+                    if (CompareWithIndex(ref @this, source, index[RightChild(j)], index[LeftChild(j)]) > 0)
+                    {
+                        j = RightChild(j);
+                    }
+                    else
+                    {
+                        j = LeftChild(j);
+                    }
+                }
+
+                if (LeftChild(j) < end)
+                {
+                    j = LeftChild(j);
+                }
+
+                return j;
+            }
+
+
+            Heapify(ref @this, source, index);
+            int end = index.Length;
+            while (end > 1)
+            {
+                end--;
+                (index[0], index[end]) = (index[end], index[0]);
+                SiftDown(ref @this, source, index, 0, end);
+            }
+        }
+
+        private static int Log2(int x)
+        {
+#if NETCOREAPP3_0_OR_GREATER
+            return System.Numerics.BitOperations.Log2((uint)x);
+#else
+            x |= 1;
+            int n = 1;
+            if (((uint)x >> 16) == 0) { n += 16; x <<= 16; }
+            if (((uint)x >> 24) == 0) { n += 8; x <<= 8; }
+            if (((uint)x >> 28) == 0) { n += 4; x <<= 4; }
+            if (((uint)x >> 30) == 0) { n += 2; x <<= 2; }
+            n = n - (int)((uint)x >> 31);
+            return 31 - n;
+#endif
+        }
+
+        private static void IntroSort<T>(ref T @this, Span<TIn> source, Span<int> index)
+            where T : ISpanOrderOperator<TSpan, TIn>
+        {
+            int maxDepth = 2 * Log2(index.Length);
+            IntroSortImpl(ref @this, source, index, maxDepth);
+        }
+
+        private static void IntroSortImpl<T>(ref T @this, Span<TIn> source, Span<int> index, int maxDepth)
+            where T : ISpanOrderOperator<TSpan, TIn>
+        {
+            if (index.Length <= 16)
+            {
+                InsertionSort(ref @this, source, index);
+                return;
+            }
+
+            if (maxDepth == 0)
+            {
+                HeapSort(ref @this, source, index);
+                return;
+            }
+
+            int p = DoPartitioning(ref @this, source, index);
+            IntroSortImpl(ref @this, source, index[..p], maxDepth - 1);
+            IntroSortImpl(ref @this, source, index[p..], maxDepth - 1);
         }
     }
 
