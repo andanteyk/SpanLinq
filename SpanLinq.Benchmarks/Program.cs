@@ -7,7 +7,7 @@ using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Validators;
 
 var config = DefaultConfig.Instance
-    .AddFilter(new AnyCategoriesFilter(new string[] { "Except" }))
+    .AddFilter(new AnyCategoriesFilter(new string[] { "OrderBy", "ThenBy" }))
     .AddDiagnoser(MemoryDiagnoser.Default)
     .AddValidator(ExecutionValidator.FailOnError)
     .WithOrderer(new DefaultOrderer(SummaryOrderPolicy.Default, MethodOrderPolicy.Alphabetical))

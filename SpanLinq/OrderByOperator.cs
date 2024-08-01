@@ -79,20 +79,98 @@ namespace SpanLinq
     {
         public int Compare(ReadOnlySpan<TIn> source, int indexA, int indexB);
         public TIn[] DelegateProcess(ReadOnlySpan<TSpan> source, out int length);
+
+
+        internal static void Sort<T>(ref T @this, Span<TIn> source, Span<int> indexes)
+            where T : ISpanOrderOperator<TSpan, TIn>
+        {
+            for (int i = 0; i < indexes.Length; i++)
+            {
+                indexes[i] = i;
+            }
+
+            QuickSort(ref @this, source, indexes);
+        }
+
+        private static int CompareWithIndex<T>(ref T @this, ReadOnlySpan<TIn> source, int indexA, int indexB)
+            where T : ISpanOrderOperator<TSpan, TIn>
+        {
+            int cmp = @this.Compare(source, indexA, indexB);
+            if (cmp != 0)
+                return cmp;
+
+            return indexA - indexB;
+        }
+
+        private static int DoPartitioning<T>(ref T @this, Span<TIn> source, Span<int> index)
+            where T : ISpanOrderOperator<TSpan, TIn>
+        {
+            int pivot;
+            pivot = index.Length / 2;
+
+            int lo = 0;
+            int hi = index.Length - 1;
+            while (true)
+            {
+                for (; lo < index.Length && CompareWithIndex(ref @this, source, index[lo], index[pivot]) < 0; lo++) ;
+                for (; hi >= 0 && CompareWithIndex(ref @this, source, index[pivot], index[hi]) < 0; hi--) ;
+
+                if (lo < hi)
+                {
+                    (index[lo], index[hi]) = (index[hi], index[lo]);
+
+                    if (pivot == lo)
+                        pivot = hi;
+                    else if (pivot == hi)
+                        pivot = lo;
+
+                    lo++;
+                    hi--;
+                }
+                else
+                {
+                    return hi + 1;
+                }
+            }
+        }
+
+        private static void QuickSort<T>(ref T @this, Span<TIn> source, Span<int> index)
+            where T : ISpanOrderOperator<TSpan, TIn>
+        {
+            if (index.Length <= 2)
+            {
+                if (CompareWithIndex(ref @this, source, index[0], index[^1]) > 0)
+                {
+                    (index[0], index[^1]) = (index[^1], index[0]);
+                }
+                return;
+            }
+
+            int p = DoPartitioning(ref @this, source, index);
+            QuickSort(ref @this, source, index[..p]);
+            QuickSort(ref @this, source, index[p..]);
+        }
     }
 
+
+    internal static class OrderHelper<T>
+    {
+        internal static Func<T, T> IdentityFunction = x => x;
+    }
 
     public struct OrderByOperator<TSpan, TIn, TOperator, TKey, TComparer> : ISpanOrderOperator<TSpan, TIn>, IDisposable
         where TOperator : ISpanOperator<TSpan, TIn>
         where TComparer : IComparer<TKey>
     {
         internal TOperator Operator;
-        internal readonly Func<TIn, TKey> KeySelector;
-        internal readonly TComparer Comparer;
-        internal readonly bool IsDescending;
+        internal Func<TIn, TKey> KeySelector;
+        internal TComparer Comparer;
+        internal bool IsDescending;
+
         internal TIn[]? Source;
         internal int[]? Indexes;
         internal int Index, Length;
+
 
         internal OrderByOperator(TOperator op, Func<TIn, TKey> keySelector, bool isDescending, TComparer comparer)
         {
@@ -133,8 +211,9 @@ namespace SpanLinq
                 var sourceSpan = SpanEnumerator<TSpan, TIn, TOperator>.ToArrayPool(source, Operator, out Source);
                 Length = sourceSpan.Length;
                 Indexes = ArrayPool<int>.Shared.Rent(sourceSpan.Length);
+                var indexSpan = Indexes.AsSpan(..Length);
 
-                OrderHelper<TIn>.Sort(sourceSpan, Indexes.AsSpan(..sourceSpan.Length), Compare);
+                ISpanOrderOperator<TSpan, TIn>.Sort(ref this, sourceSpan, indexSpan);
 
                 Index = 0;
             }
@@ -158,11 +237,9 @@ namespace SpanLinq
 
         public int Compare(ReadOnlySpan<TIn> source, int indexA, int indexB)
         {
-            TComparer comparer = Comparer;
-
             return IsDescending ?
-                comparer.Compare(KeySelector(source[indexB]), KeySelector(source[indexA])) :
-                comparer.Compare(KeySelector(source[indexA]), KeySelector(source[indexB]));
+                Comparer.Compare(KeySelector(source[indexB]), KeySelector(source[indexA])) :
+                Comparer.Compare(KeySelector(source[indexA]), KeySelector(source[indexB]));
         }
 
         public TIn[] DelegateProcess(ReadOnlySpan<TSpan> source, out int length)
@@ -172,76 +249,7 @@ namespace SpanLinq
             Index = int.MinValue;
             return result;
         }
-    }
 
-    internal static class OrderHelper<TIn>
-    {
-        internal delegate int CompareDelegate(ReadOnlySpan<TIn> source, int indexA, int indexB);
 
-        internal static void Sort(Span<TIn> source, Span<int> indexes, CompareDelegate compareMethod)
-        {
-            for (int i = 0; i < indexes.Length; i++)
-            {
-                indexes[i] = i;
-            }
-
-            QuickSort(source, indexes, compareMethod);
-        }
-
-        static int Compare(ReadOnlySpan<TIn> source, int indexA, int indexB, CompareDelegate compareMethod)
-        {
-            int cmp = compareMethod(source, indexA, indexB);
-            if (cmp != 0)
-                return cmp;
-
-            return indexA - indexB;
-        }
-
-        static int DoPartitioning(Span<TIn> source, Span<int> index, CompareDelegate compareMethod)
-        {
-            int pivot;
-            pivot = index.Length / 2;
-
-            int lo = 0;
-            int hi = index.Length - 1;
-            while (true)
-            {
-                for (; lo < index.Length && Compare(source, index[lo], index[pivot], compareMethod) < 0; lo++) ;
-                for (; hi >= 0 && Compare(source, index[pivot], index[hi], compareMethod) < 0; hi--) ;
-
-                if (lo < hi)
-                {
-                    (index[lo], index[hi]) = (index[hi], index[lo]);
-
-                    if (pivot == lo)
-                        pivot = hi;
-                    else if (pivot == hi)
-                        pivot = lo;
-
-                    lo++;
-                    hi--;
-                }
-                else
-                {
-                    return hi + 1;
-                }
-            }
-        }
-
-        static void QuickSort(Span<TIn> source, Span<int> index, CompareDelegate comparer)
-        {
-            if (index.Length <= 2)
-            {
-                if (Compare(source, index[0], index[^1], comparer) > 0)
-                {
-                    (index[0], index[^1]) = (index[^1], index[0]);
-                }
-                return;
-            }
-
-            int p = DoPartitioning(source, index, comparer);
-            QuickSort(source, index[..p], comparer);
-            QuickSort(source, index[p..], comparer);
-        }
     }
 }

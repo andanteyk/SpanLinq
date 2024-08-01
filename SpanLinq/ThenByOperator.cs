@@ -31,36 +31,6 @@ namespace SpanLinq
         }
     }
 
-    partial struct SpanEnumerator<TSource, TOut, TOperator>
-    {
-        /*
-        public SpanEnumerator<TSource, TOut, ThenByOperator<TSource, TOut, TOrderOperator, TKey, Comparer<TKey>>> ThenBy<TOrderOperator, TKey>(Func<TOut, TKey> keySelector)
-            where TOrderOperator : ISpanOrderOperator<TSource, TOut>, TOperator
-        {
-            return new(Source, new((TOrderOperator)Operator, keySelector, false, Comparer<TKey>.Default));
-        }
-
-        public SpanEnumerator<TSource, TOut, ThenByOperator<TSource, TOut, TOrderOperator, TKey, TComparer>> ThenBy<TOrderOperator, TKey, TComparer>(Func<TOut, TKey> keySelector, TComparer comparer)
-            where TOrderOperator : ISpanOrderOperator<TSource, TOut>, TOperator
-            where TComparer : IComparer<TKey>
-        {
-            return new(Source, new((TOrderOperator)Operator, keySelector, false, comparer));
-        }
-
-        public SpanEnumerator<TSource, TOut, ThenByOperator<TSource, TOut, TOrderOperator, TKey, Comparer<TKey>>> ThenByDescending<TOrderOperator, TKey>(Func<TOut, TKey> keySelector)
-            where TOrderOperator : ISpanOrderOperator<TSource, TOut>, TOperator
-        {
-            return new(Source, new((TOrderOperator)Operator, keySelector, true, Comparer<TKey>.Default));
-        }
-
-        public SpanEnumerator<TSource, TOut, ThenByOperator<TSource, TOut, TOrderOperator, TKey, TComparer>> ThenByDescending<TOrderOperator, TKey, TComparer>(Func<TOut, TKey> keySelector, TComparer comparer)
-            where TOrderOperator : ISpanOrderOperator<TSource, TOut>, TOperator
-            where TComparer : IComparer<TKey>
-        {
-            return new(Source, new((TOrderOperator)Operator, keySelector, true, comparer));
-        }
-        */
-    }
 
     public struct ThenByOperator<TSpan, TIn, TOperator, TKey, TComparer> : ISpanOrderOperator<TSpan, TIn>, IDisposable
         where TOperator : ISpanOrderOperator<TSpan, TIn>
@@ -70,6 +40,7 @@ namespace SpanLinq
         internal readonly Func<TIn, TKey> KeySelector;
         internal readonly TComparer Comparer;
         internal readonly bool IsDescending;
+
         internal TIn[]? Source;
         internal int[]? Indexes;
         internal int Index, Length;
@@ -99,7 +70,7 @@ namespace SpanLinq
                 Source = Operator.DelegateProcess(source, out Length);
                 Indexes = ArrayPool<int>.Shared.Rent(Length);
 
-                OrderHelper<TIn>.Sort(Source.AsSpan(..Length), Indexes.AsSpan(..Length), Compare);
+                ISpanOrderOperator<TSpan, TIn>.Sort(ref this, Source.AsSpan(..Length), Indexes.AsSpan(..Length));
 
                 Index = 0;
             }
