@@ -276,12 +276,41 @@ namespace SpanLinq
             IntroSortImpl(ref @this, source, index[..p], maxDepth - 1);
             IntroSortImpl(ref @this, source, index[p..], maxDepth - 1);
         }
+
+        internal static bool CanSortByUnstableSort<T, TKey>(ref T @this, Func<TIn, TKey> keySelector)
+            where T : ISpanOrderOperator<TSpan, TIn>
+        {
+            if (keySelector is Func<TIn, TIn> maybeIdentity && maybeIdentity == OrderHelper<TIn>.IdentityFunction)
+            {
+                return typeof(TIn) switch
+                {
+                    Type t when t == typeof(byte) => true,
+                    Type t when t == typeof(sbyte) => true,
+                    Type t when t == typeof(bool) => true,
+                    Type t when t == typeof(short) => true,
+                    Type t when t == typeof(ushort) => true,
+                    Type t when t == typeof(char) => true,
+                    Type t when t == typeof(int) => true,
+                    Type t when t == typeof(uint) => true,
+                    Type t when t == typeof(long) => true,
+                    Type t when t == typeof(ulong) => true,
+#if NET7_0_OR_GREATER
+                    Type t when t == typeof(Int128) => true,
+                    Type t when t == typeof(UInt128) => true,
+#endif
+                    Type t when t == typeof(nint) => true,
+                    Type t when t == typeof(nuint) => true,
+                    _ => false,
+                };
+            }
+            return false;
+        }
     }
 
 
     internal static class OrderHelper<T>
     {
-        internal static Func<T, T> IdentityFunction = x => x;
+        internal static readonly Func<T, T> IdentityFunction = x => x;
     }
 
     public struct OrderByOperator<TSpan, TIn, TOperator, TKey, TComparer> : ISpanOrderOperator<TSpan, TIn>, IDisposable
@@ -336,17 +365,37 @@ namespace SpanLinq
             {
                 var sourceSpan = SpanEnumerator<TSpan, TIn, TOperator>.ToArrayPool(source, Operator, out Source);
                 Length = sourceSpan.Length;
-                Indexes = ArrayPool<int>.Shared.Rent(sourceSpan.Length);
-                var indexSpan = Indexes.AsSpan(..Length);
 
-                ISpanOrderOperator<TSpan, TIn>.Sort(ref this, sourceSpan, indexSpan);
+                if (ISpanOrderOperator<TSpan, TIn>.CanSortByUnstableSort(ref this, KeySelector))
+                {
+#if NET5_0_OR_GREATER
+                    sourceSpan.Sort(Comparer as IComparer<TIn>);
+#else
+                    Array.Sort(Source!, 0, sourceSpan.Length, Comparer as IComparer<TIn>);
+#endif
+                }
+                else
+                {
+                    Indexes = ArrayPool<int>.Shared.Rent(sourceSpan.Length);
+                    var indexSpan = Indexes.AsSpan(..Length);
 
+                    ISpanOrderOperator<TSpan, TIn>.Sort(ref this, sourceSpan, indexSpan);
+                }
                 Index = 0;
             }
 
             if (Index < Length)
             {
-                var result = Source![Indexes![Index]];
+                TIn result;
+
+                if (Indexes != null)
+                {
+                    result = Source![Indexes[Index]];
+                }
+                else
+                {
+                    result = Source![Index];
+                }
                 Index++;
                 success = true;
                 return result;
@@ -375,7 +424,5 @@ namespace SpanLinq
             Index = int.MinValue;
             return result;
         }
-
-
     }
 }
