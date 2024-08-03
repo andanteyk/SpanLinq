@@ -2,80 +2,80 @@ namespace SpanLinq
 {
     public static partial class SpanEnumerable
     {
-        public static SpanEnumerator2<TIn, TSource2, TIn, UnionByOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, TKey, EqualityComparer<TKey>>> UnionBy<TIn, TSource2, TOperator2, TKey>(this ReadOnlySpan<TIn> span, SpanEnumerator<TSource2, TIn, TOperator2> second, Func<TIn, TKey> keySelector)
-            where TOperator2 : ISpanOperator<TSource2, TIn>
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TIn, TIn, UnionByOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, TKey, EqualityComparer<TKey>>>> UnionBy<TIn, TKey>(this ReadOnlySpan<TIn> first, ReadOnlySpan<TIn> second, Func<TIn, TKey> keySelector)
         {
-            return new(span, second.Source, new(new(), second.Operator, keySelector, EqualityComparer<TKey>.Default));
+            return new(first, new(new(new(), new(), keySelector, EqualityComparer<TKey>.Default), second));
         }
 
-        public static SpanEnumerator2<TIn, TIn, TIn, UnionByOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, TKey, EqualityComparer<TKey>>> UnionBy<TIn, TKey>(this ReadOnlySpan<TIn> span, ReadOnlySpan<TIn> second, Func<TIn, TKey> keySelector)
-        {
-            return new(span, second, new(new(), new(), keySelector, EqualityComparer<TKey>.Default));
-        }
-
-        public static SpanEnumerator2<TIn, TSource2, TIn, UnionByOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, TKey, TComparer>> UnionBy<TIn, TSource2, TOperator2, TKey, TComparer>(this ReadOnlySpan<TIn> span, SpanEnumerator<TSource2, TIn, TOperator2> second, Func<TIn, TKey> keySelector, TComparer comparer)
-            where TOperator2 : ISpanOperator<TSource2, TIn>
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TIn, TIn, UnionByOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, TKey, TComparer>>> UnionBy<TIn, TKey, TComparer>(this ReadOnlySpan<TIn> first, ReadOnlySpan<TIn> second, Func<TIn, TKey> keySelector, TComparer comparer)
             where TComparer : IEqualityComparer<TKey>
         {
-            return new(span, second.Source, new(new(), second.Operator, keySelector, comparer));
+            return new(first, new(new(new(), new(), keySelector, comparer), second));
         }
 
-        public static SpanEnumerator2<TIn, TIn, TIn, UnionByOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, TKey, TComparer>> UnionBy<TIn, TKey, TComparer>(this ReadOnlySpan<TIn> span, ReadOnlySpan<TIn> second, Func<TIn, TKey> keySelector, TComparer comparer)
-            where TComparer : IEqualityComparer<TKey>
-        {
-            return new(span, second, new(new(), new(), keySelector, comparer));
-        }
-
-
-        public static SpanEnumerator2<TIn, TSource2, TIn, UnionByOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, TKey, EqualityComparer<TKey>>> UnionBy<TIn, TSource2, TOperator2, TKey>(this Span<TIn> span, SpanEnumerator<TSource2, TIn, TOperator2> second, Func<TIn, TKey> keySelector)
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TSource2, TIn, UnionByOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, TKey, EqualityComparer<TKey>>>> UnionBy<TIn, TSource2, TOperator2, TKey>(this ReadOnlySpan<TIn> first, SpanEnumerator<TSource2, TIn, TOperator2> second, Func<TIn, TKey> keySelector)
             where TOperator2 : ISpanOperator<TSource2, TIn>
         {
-            return new(span, second.Source, new(new(), second.Operator, keySelector, EqualityComparer<TKey>.Default));
+            return new(first, new(new(new(), second.Operator, keySelector, EqualityComparer<TKey>.Default), second.Source));
         }
 
-        public static SpanEnumerator2<TIn, TIn, TIn, UnionByOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, TKey, EqualityComparer<TKey>>> UnionBy<TIn, TKey>(this Span<TIn> span, ReadOnlySpan<TIn> second, Func<TIn, TKey> keySelector)
-        {
-            return new(span, second, new(new(), new(), keySelector, EqualityComparer<TKey>.Default));
-        }
-
-        public static SpanEnumerator2<TIn, TSource2, TIn, UnionByOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, TKey, TComparer>> UnionBy<TIn, TSource2, TOperator2, TKey, TComparer>(this Span<TIn> span, SpanEnumerator<TSource2, TIn, TOperator2> second, Func<TIn, TKey> keySelector, TComparer comparer)
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TSource2, TIn, UnionByOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, TKey, TComparer>>> UnionBy<TIn, TSource2, TOperator2, TKey, TComparer>(this ReadOnlySpan<TIn> first, SpanEnumerator<TSource2, TIn, TOperator2> second, Func<TIn, TKey> keySelector, TComparer comparer)
             where TOperator2 : ISpanOperator<TSource2, TIn>
             where TComparer : IEqualityComparer<TKey>
         {
-            return new(span, second.Source, new(new(), second.Operator, keySelector, comparer));
+            return new(first, new(new(new(), second.Operator, keySelector, comparer), second.Source));
         }
 
-        public static SpanEnumerator2<TIn, TIn, TIn, UnionByOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, TKey, TComparer>> UnionBy<TIn, TKey, TComparer>(this Span<TIn> span, ReadOnlySpan<TIn> second, Func<TIn, TKey> keySelector, TComparer comparer)
+
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TIn, TIn, UnionByOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, TKey, EqualityComparer<TKey>>>> UnionBy<TIn, TKey>(this Span<TIn> first, ReadOnlySpan<TIn> second, Func<TIn, TKey> keySelector)
+        {
+            return new(first, new(new(new(), new(), keySelector, EqualityComparer<TKey>.Default), second));
+        }
+
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TIn, TIn, UnionByOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, TKey, TComparer>>> UnionBy<TIn, TKey, TComparer>(this Span<TIn> first, ReadOnlySpan<TIn> second, Func<TIn, TKey> keySelector, TComparer comparer)
             where TComparer : IEqualityComparer<TKey>
         {
-            return new(span, second, new(new(), new(), keySelector, comparer));
+            return new(first, new(new(new(), new(), keySelector, comparer), second));
+        }
+
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TSource2, TIn, UnionByOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, TKey, EqualityComparer<TKey>>>> UnionBy<TIn, TSource2, TOperator2, TKey>(this Span<TIn> first, SpanEnumerator<TSource2, TIn, TOperator2> second, Func<TIn, TKey> keySelector)
+            where TOperator2 : ISpanOperator<TSource2, TIn>
+        {
+            return new(first, new(new(new(), second.Operator, keySelector, EqualityComparer<TKey>.Default), second.Source));
+        }
+
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TSource2, TIn, UnionByOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, TKey, TComparer>>> UnionBy<TIn, TSource2, TOperator2, TKey, TComparer>(this Span<TIn> first, SpanEnumerator<TSource2, TIn, TOperator2> second, Func<TIn, TKey> keySelector, TComparer comparer)
+            where TOperator2 : ISpanOperator<TSource2, TIn>
+            where TComparer : IEqualityComparer<TKey>
+        {
+            return new(first, new(new(new(), second.Operator, keySelector, comparer), second.Source));
         }
     }
 
     partial struct SpanEnumerator<TSource, TOut, TOperator>
     {
-        public SpanEnumerator2<TSource, TSource2, TOut, UnionByOperator<TSource, TSource2, TOut, TOperator, TOperator2, TKey, EqualityComparer<TKey>>> UnionBy<TSource2, TOperator2, TKey>(SpanEnumerator<TSource2, TOut, TOperator2> second, Func<TOut, TKey> keySelector)
+        public SpanEnumerator<TSource, TOut, Convert2Operator<TSource, TOut, TOut, UnionByOperator<TSource, TOut, TOut, TOperator, IdentityOperator<TOut>, TKey, EqualityComparer<TKey>>>> UnionBy<TKey>(ReadOnlySpan<TOut> second, Func<TOut, TKey> keySelector)
+        {
+            return new(Source, new(new(Operator, new(), keySelector, EqualityComparer<TKey>.Default), second));
+        }
+
+        public SpanEnumerator<TSource, TOut, Convert2Operator<TSource, TOut, TOut, UnionByOperator<TSource, TOut, TOut, TOperator, IdentityOperator<TOut>, TKey, TComparer>>> UnionBy<TKey, TComparer>(ReadOnlySpan<TOut> second, Func<TOut, TKey> keySelector, TComparer comparer)
+            where TComparer : IEqualityComparer<TKey>
+        {
+            return new(Source, new(new(Operator, new(), keySelector, comparer), second));
+        }
+
+        public SpanEnumerator<TSource, TOut, Convert2Operator<TSource, TSource2, TOut, UnionByOperator<TSource, TSource2, TOut, TOperator, TOperator2, TKey, EqualityComparer<TKey>>>> UnionBy<TSource2, TOperator2, TKey>(SpanEnumerator<TSource2, TOut, TOperator2> second, Func<TOut, TKey> keySelector)
             where TOperator2 : ISpanOperator<TSource2, TOut>
         {
-            return new(Source, second.Source, new(Operator, second.Operator, keySelector, EqualityComparer<TKey>.Default));
+            return new(Source, new(new(Operator, second.Operator, keySelector, EqualityComparer<TKey>.Default), second.Source));
         }
 
-        public SpanEnumerator2<TSource, TOut, TOut, UnionByOperator<TSource, TOut, TOut, TOperator, IdentityOperator<TOut>, TKey, EqualityComparer<TKey>>> UnionBy<TKey>(ReadOnlySpan<TOut> second, Func<TOut, TKey> keySelector)
-        {
-            return new(Source, second, new(Operator, new(), keySelector, EqualityComparer<TKey>.Default));
-        }
-
-        public SpanEnumerator2<TSource, TSource2, TOut, UnionByOperator<TSource, TSource2, TOut, TOperator, TOperator2, TKey, TComparer>> UnionBy<TSource2, TOperator2, TKey, TComparer>(SpanEnumerator<TSource2, TOut, TOperator2> second, Func<TOut, TKey> keySelector, TComparer comparer)
+        public SpanEnumerator<TSource, TOut, Convert2Operator<TSource, TSource2, TOut, UnionByOperator<TSource, TSource2, TOut, TOperator, TOperator2, TKey, TComparer>>> UnionBy<TSource2, TOperator2, TKey, TComparer>(SpanEnumerator<TSource2, TOut, TOperator2> second, Func<TOut, TKey> keySelector, TComparer comparer)
             where TOperator2 : ISpanOperator<TSource2, TOut>
             where TComparer : IEqualityComparer<TKey>
         {
-            return new(Source, second.Source, new(Operator, second.Operator, keySelector, comparer));
-        }
-
-        public SpanEnumerator2<TSource, TOut, TOut, UnionByOperator<TSource, TOut, TOut, TOperator, IdentityOperator<TOut>, TKey, TComparer>> UnionBy<TKey, TComparer>(ReadOnlySpan<TOut> second, Func<TOut, TKey> keySelector, TComparer comparer)
-            where TComparer : IEqualityComparer<TKey>
-        {
-            return new(Source, second, new(Operator, new(), keySelector, comparer));
+            return new(Source, new(new(Operator, second.Operator, keySelector, comparer), second.Source));
         }
     }
 

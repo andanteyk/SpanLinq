@@ -8,10 +8,10 @@ public class ZipTest
     {
         CollectionAssert.AreEqual(
             Enumerable.Range(0, 10).Zip(Enumerable.Range(0, 10)).ToArray(),
-            SpanEnumerable.Range(0, 10).Zip(SpanEnumerable.Range(0, 10)).AsSpan().ToArray());
+            SpanEnumerable.Range(0, 10).Zip(SpanEnumerable.Range(0, 10)).ToArray());
 
         CollectionAssert.AreEqual(
             Enumerable.Range(0, 10).Zip(Enumerable.Range(0, 10), Enumerable.Range(0, 10)).ToArray(),
-            SpanEnumerable.Range(0, 10).Zip(SpanEnumerable.Range(0, 10), SpanEnumerable.Range(0, 10)).AsSpan().ToArray());
+            SpanEnumerable.Range(0, 10).Zip(SpanEnumerable.Range(0, 10), SpanEnumerable.Range(0, 10)).ToArray());
     }
 }

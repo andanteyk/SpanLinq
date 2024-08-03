@@ -2,40 +2,40 @@ namespace SpanLinq
 {
     public static partial class SpanEnumerable
     {
-        public static SpanEnumerator2<T, TSecond, T, ConcatOperator<T, TSecond, T, IdentityOperator<T>, TSecondOperator>> Concat<T, TSecond, TSecondOperator>(this ReadOnlySpan<T> span, SpanEnumerator<TSecond, T, TSecondOperator> second)
+        public static SpanEnumerator<T, T, Convert2Operator<T, TSecond, T, ConcatOperator<T, TSecond, T, IdentityOperator<T>, TSecondOperator>>> Concat<T, TSecond, TSecondOperator>(this ReadOnlySpan<T> first, SpanEnumerator<TSecond, T, TSecondOperator> second)
             where TSecondOperator : ISpanOperator<TSecond, T>
         {
-            return new(span, second.Source, new(new(), second.Operator));
+            return new(first, new(new(new(), second.Operator), second.Source));
         }
 
-        public static SpanEnumerator2<T, T, T, ConcatOperator<T, T, T, IdentityOperator<T>, IdentityOperator<T>>> Concat<T>(this ReadOnlySpan<T> span, ReadOnlySpan<T> second)
+        public static SpanEnumerator<T, T, Convert2Operator<T, T, T, ConcatOperator<T, T, T, IdentityOperator<T>, IdentityOperator<T>>>> Concat<T>(this ReadOnlySpan<T> first, ReadOnlySpan<T> second)
         {
-            return new(span, second, new(new(), new()));
+            return new(first, new(new(new(), new()), second));
         }
 
-        public static SpanEnumerator2<T, TSecond, T, ConcatOperator<T, TSecond, T, IdentityOperator<T>, TSecondOperator>> Concat<T, TSecond, TSecondOperator>(this Span<T> span, SpanEnumerator<TSecond, T, TSecondOperator> second)
+        public static SpanEnumerator<T, T, Convert2Operator<T, TSecond, T, ConcatOperator<T, TSecond, T, IdentityOperator<T>, TSecondOperator>>> Concat<T, TSecond, TSecondOperator>(this Span<T> first, SpanEnumerator<TSecond, T, TSecondOperator> second)
             where TSecondOperator : ISpanOperator<TSecond, T>
         {
-            return new(span, second.Source, new(new(), second.Operator));
+            return new(first, new(new(new(), second.Operator), second.Source));
         }
 
-        public static SpanEnumerator2<T, T, T, ConcatOperator<T, T, T, IdentityOperator<T>, IdentityOperator<T>>> Concat<T>(this Span<T> span, ReadOnlySpan<T> second)
+        public static SpanEnumerator<T, T, Convert2Operator<T, T, T, ConcatOperator<T, T, T, IdentityOperator<T>, IdentityOperator<T>>>> Concat<T>(this Span<T> first, ReadOnlySpan<T> second)
         {
-            return new(span, second, new(new(), new()));
+            return new(first, new(new(new(), new()), second));
         }
     }
 
     partial struct SpanEnumerator<TSource, TOut, TOperator>
     {
-        public SpanEnumerator2<TSource, TSource2, TOut, ConcatOperator<TSource, TSource2, TOut, TOperator, TOperator2>> Concat<TSource2, TOperator2>(SpanEnumerator<TSource2, TOut, TOperator2> second)
+        public SpanEnumerator<TSource, TOut, Convert2Operator<TSource, TSource2, TOut, ConcatOperator<TSource, TSource2, TOut, TOperator, TOperator2>>> Concat<TSource2, TOperator2>(SpanEnumerator<TSource2, TOut, TOperator2> second)
             where TOperator2 : ISpanOperator<TSource2, TOut>
         {
-            return new(Source, second.Source, new(Operator, second.Operator));
+            return new(Source, new(new(Operator, second.Operator), second.Source));
         }
 
-        public SpanEnumerator2<TSource, TOut, TOut, ConcatOperator<TSource, TOut, TOut, TOperator, IdentityOperator<TOut>>> Concat(ReadOnlySpan<TOut> second)
+        public SpanEnumerator<TSource, TOut, Convert2Operator<TSource, TOut, TOut, ConcatOperator<TSource, TOut, TOut, TOperator, IdentityOperator<TOut>>>> Concat(ReadOnlySpan<TOut> second)
         {
-            return new(Source, second, new(Operator, new IdentityOperator<TOut>()));
+            return new(Source, new(new(Operator, new()), second));
         }
     }
 

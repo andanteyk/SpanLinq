@@ -11,7 +11,7 @@ namespace SpanLinq.Benchmarks
         public void SpanZip()
         {
             // TODO: type inference
-            Range.AsSpan().Zip<int, int>(Range).AsSpan().Consume(Helper.Consumer);
+            Range.AsSpan().Zip<int, int>(Range).Consume(Helper.Consumer);
         }
 
         [Benchmark, BenchmarkCategory("System", "Zip")]

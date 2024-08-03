@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace SpanLinq
 {
@@ -310,7 +311,7 @@ namespace SpanLinq
 
     internal static class OrderHelper<T>
     {
-        internal static readonly Func<T, T> IdentityFunction = x => x;
+        internal static readonly Func<T, T> IdentityFunction = static x => x;
     }
 
     public struct OrderByOperator<TSpan, TIn, TOperator, TKey, TComparer> : ISpanOrderOperator<TSpan, TIn>, IDisposable
@@ -366,21 +367,14 @@ namespace SpanLinq
                 var sourceSpan = SpanEnumerator<TSpan, TIn, TOperator>.ToArrayPool(source, Operator, out Source);
                 Length = sourceSpan.Length;
 
-                if (ISpanOrderOperator<TSpan, TIn>.CanSortByUnstableSort(ref this, KeySelector))
-                {
-#if NET5_0_OR_GREATER
-                    sourceSpan.Sort(Comparer as IComparer<TIn>);
-#else
-                    Array.Sort(Source!, 0, sourceSpan.Length, Comparer as IComparer<TIn>);
-#endif
-                }
-                else
-                {
-                    Indexes = ArrayPool<int>.Shared.Rent(sourceSpan.Length);
-                    var indexSpan = Indexes.AsSpan(..Length);
 
-                    ISpanOrderOperator<TSpan, TIn>.Sort(ref this, sourceSpan, indexSpan);
-                }
+                // TODO: optimize by CanSortByUnstableSort()
+
+                Indexes = ArrayPool<int>.Shared.Rent(sourceSpan.Length);
+                var indexSpan = Indexes.AsSpan(..Length);
+
+                ISpanOrderOperator<TSpan, TIn>.Sort(ref this, sourceSpan, indexSpan);
+
                 Index = 0;
             }
 

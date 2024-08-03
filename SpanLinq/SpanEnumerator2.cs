@@ -49,17 +49,68 @@ namespace SpanLinq
             return ToArrayPool(Source1, Source2, Operator, out poolingArray);
         }
 
-        public IterateOnceBuffer<TOut> AsSpan()
+        public SpanEnumerator<TSource1, TOut, Convert2Operator<TSource1, TSource2, TOut, TOperator>> ConvertToEnumerator()
         {
-            var span = ToArrayPool(out var poolingArray);
-            return new IterateOnceBuffer<TOut>(poolingArray, span.Length);
+            return new(Source1, new(Operator, Source2));
+        }
+    }
+
+
+    public struct Convert2Operator<TSource1, TSource2, TOut, TOperator2> : ISpanOperator<TSource1, TOut>, IDisposable
+        where TOperator2 : ISpanOperator2<TSource1, TSource2, TOut>
+    {
+        internal TOperator2 Operator;
+
+        internal TSource2[]? Source2;
+        internal int Source2Length;
+        internal int Source2Index;
+
+        internal Convert2Operator(TOperator2 op2, ReadOnlySpan<TSource2> source2)
+        {
+            Operator = op2;
+
+            Source2 = ArrayPool<TSource2>.Shared.Rent(source2.Length);
+            source2.CopyTo(Source2);
+            Source2Length = source2.Length;
+            Source2Index = 0;
         }
 
-        public SpanEnumerator<TOut, TOut, IdentityWithDisposeOperator<TOut, IterateOnceBuffer<TOut>>> ToEnumerator()
+        public void Dispose()
         {
-            var span = ToArrayPool(out var poolingArray);
-            var buffer = new IterateOnceBuffer<TOut>(poolingArray, span.Length);
-            return new(buffer, new(buffer));
+            if (Source2 != null)
+            {
+                ArrayPool<TSource2>.Shared.Return(Source2);
+                Source2 = null;
+            }
+        }
+
+        public bool TryGetNonEnumeratedCount(ReadOnlySpan<TSource1> source, out int length)
+        {
+            return Operator.TryGetNonEnumeratedCount(source, Source2.AsSpan(Source2Index..Source2Length), out length);
+        }
+
+        public TOut TryMoveNext(ref ReadOnlySpan<TSource1> source, out bool success)
+        {
+            if (Source2 == null)
+            {
+                success = false;
+                return default!;
+            }
+
+            ReadOnlySpan<TSource2> source2 = Source2.AsSpan(Source2Index..Source2Length);
+
+            var current = Operator.TryMoveNext(ref source, ref source2, out success);
+            if (!success)
+            {
+                Dispose();
+            }
+
+            if (!Source2.AsSpan().Overlaps(source2, out Source2Index))
+            {
+                Source2Index = Source2Length;
+            }
+
+            return current;
         }
     }
 }

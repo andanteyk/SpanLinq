@@ -32,7 +32,7 @@ namespace SpanLinq
                 return length;
             }
 
-            return Count(x => true);
+            return LongCount(static x => true);
         }
 
         public long LongCount(Predicate<TOut> predicate)

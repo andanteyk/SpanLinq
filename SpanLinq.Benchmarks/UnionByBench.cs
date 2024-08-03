@@ -10,7 +10,7 @@ namespace SpanLinq.Benchmarks
         [Benchmark, BenchmarkCategory("Span", "UnionBy")]
         public void SpanUnionBy()
         {
-            Range.AsSpan().UnionBy(Range, i => i).AsSpan().Consume(Helper.Consumer);
+            Range.AsSpan().UnionBy(Range, i => i).Consume(Helper.Consumer);
         }
 
         [Benchmark, BenchmarkCategory("System", "UnionBy")]

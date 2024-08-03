@@ -2,80 +2,80 @@ namespace SpanLinq
 {
     public static partial class SpanEnumerable
     {
-        public static SpanEnumerator3<TSource1, TSource2, TSource3, (TSource1 First, TSource2 Second, TSource3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TSource2, TSource3, IdentityOperator<TSource1>, IdentityOperator<TSource2>, IdentityOperator<TSource3>>> Zip<TSource1, TSource2, TSource3>(this ReadOnlySpan<TSource1> span, ReadOnlySpan<TSource2> second, ReadOnlySpan<TSource3> third)
+        public static SpanEnumerator<TSource1, (TSource1 First, TSource2 Second, TSource3 Third), Convert3Operator<TSource1, TSource2, TSource3, (TSource1 First, TSource2 Second, TSource3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TSource2, TSource3, IdentityOperator<TSource1>, IdentityOperator<TSource2>, IdentityOperator<TSource3>>>> Zip<TSource1, TSource2, TSource3>(this ReadOnlySpan<TSource1> span, ReadOnlySpan<TSource2> second, ReadOnlySpan<TSource3> third)
         {
-            return new(span, second, third, new(new(), new(), new()));
+            return new(span, new(new(new(), new(), new()), second, third));
         }
 
-        public static SpanEnumerator3<TSource1, TSource2, TSource3, (TSource1 First, TSource2 Second, TOut3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TSource2, TOut3, IdentityOperator<TSource1>, IdentityOperator<TSource2>, TOperator3>> Zip<TSource1, TSource2, TSource3, TOut3, TOperator3>(this ReadOnlySpan<TSource1> span, ReadOnlySpan<TSource2> second, SpanEnumerator<TSource3, TOut3, TOperator3> third)
+        public static SpanEnumerator<TSource1, (TSource1 First, TSource2 Second, TOut3 Third), Convert3Operator<TSource1, TSource2, TSource3, (TSource1 First, TSource2 Second, TOut3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TSource2, TOut3, IdentityOperator<TSource1>, IdentityOperator<TSource2>, TOperator3>>> Zip<TSource1, TSource2, TSource3, TOut3, TOperator3>(this ReadOnlySpan<TSource1> span, ReadOnlySpan<TSource2> second, SpanEnumerator<TSource3, TOut3, TOperator3> third)
             where TOperator3 : ISpanOperator<TSource3, TOut3>
         {
-            return new(span, second, third.Source, new(new(), new(), third.Operator));
+            return new(span, new(new(new(), new(), third.Operator), second, third.Source));
         }
 
-        public static SpanEnumerator3<TSource1, TSource2, TSource3, (TSource1 First, TOut2 Second, TSource3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TOut2, TSource3, IdentityOperator<TSource1>, TOperator2, IdentityOperator<TSource3>>> Zip<TSource1, TSource2, TSource3, TOut2, TOperator2>(this ReadOnlySpan<TSource1> span, SpanEnumerator<TSource2, TOut2, TOperator2> second, ReadOnlySpan<TSource3> third)
+        public static SpanEnumerator<TSource1, (TSource1 First, TOut2 Second, TSource3 Third), Convert3Operator<TSource1, TSource2, TSource3, (TSource1 First, TOut2 Second, TSource3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TOut2, TSource3, IdentityOperator<TSource1>, TOperator2, IdentityOperator<TSource3>>>> Zip<TSource1, TSource2, TSource3, TOut2, TOperator2>(this ReadOnlySpan<TSource1> span, SpanEnumerator<TSource2, TOut2, TOperator2> second, ReadOnlySpan<TSource3> third)
             where TOperator2 : ISpanOperator<TSource2, TOut2>
         {
-            return new(span, second.Source, third, new(new(), second.Operator, new()));
+            return new(span, new(new(new(), second.Operator, new()), second.Source, third));
         }
 
-        public static SpanEnumerator3<TSource1, TSource2, TSource3, (TSource1 First, TOut2 Second, TOut3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TOut2, TOut3, IdentityOperator<TSource1>, TOperator2, TOperator3>> Zip<TSource1, TSource2, TSource3, TOut2, TOut3, TOperator2, TOperator3>(this ReadOnlySpan<TSource1> span, SpanEnumerator<TSource2, TOut2, TOperator2> second, SpanEnumerator<TSource3, TOut3, TOperator3> third)
-            where TOperator2 : ISpanOperator<TSource2, TOut2>
-            where TOperator3 : ISpanOperator<TSource3, TOut3>
-        {
-            return new(span, second.Source, third.Source, new(new(), second.Operator, third.Operator));
-        }
-
-
-        public static SpanEnumerator3<TSource1, TSource2, TSource3, (TSource1 First, TSource2 Second, TSource3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TSource2, TSource3, IdentityOperator<TSource1>, IdentityOperator<TSource2>, IdentityOperator<TSource3>>> Zip<TSource1, TSource2, TSource3>(this Span<TSource1> span, ReadOnlySpan<TSource2> second, ReadOnlySpan<TSource3> third)
-        {
-            return new(span, second, third, new(new(), new(), new()));
-        }
-
-        public static SpanEnumerator3<TSource1, TSource2, TSource3, (TSource1 First, TSource2 Second, TOut3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TSource2, TOut3, IdentityOperator<TSource1>, IdentityOperator<TSource2>, TOperator3>> Zip<TSource1, TSource2, TSource3, TOut3, TOperator3>(this Span<TSource1> span, ReadOnlySpan<TSource2> second, SpanEnumerator<TSource3, TOut3, TOperator3> third)
-            where TOperator3 : ISpanOperator<TSource3, TOut3>
-        {
-            return new(span, second, third.Source, new(new(), new(), third.Operator));
-        }
-
-        public static SpanEnumerator3<TSource1, TSource2, TSource3, (TSource1 First, TOut2 Second, TSource3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TOut2, TSource3, IdentityOperator<TSource1>, TOperator2, IdentityOperator<TSource3>>> Zip<TSource1, TSource2, TSource3, TOut2, TOperator2>(this Span<TSource1> span, SpanEnumerator<TSource2, TOut2, TOperator2> second, ReadOnlySpan<TSource3> third)
-            where TOperator2 : ISpanOperator<TSource2, TOut2>
-        {
-            return new(span, second.Source, third, new(new(), second.Operator, new()));
-        }
-
-        public static SpanEnumerator3<TSource1, TSource2, TSource3, (TSource1 First, TOut2 Second, TOut3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TOut2, TOut3, IdentityOperator<TSource1>, TOperator2, TOperator3>> Zip<TSource1, TSource2, TSource3, TOut2, TOut3, TOperator2, TOperator3>(this Span<TSource1> span, SpanEnumerator<TSource2, TOut2, TOperator2> second, SpanEnumerator<TSource3, TOut3, TOperator3> third)
+        public static SpanEnumerator<TSource1, (TSource1 First, TOut2 Second, TOut3 Third), Convert3Operator<TSource1, TSource2, TSource3, (TSource1 First, TOut2 Second, TOut3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TOut2, TOut3, IdentityOperator<TSource1>, TOperator2, TOperator3>>> Zip<TSource1, TSource2, TSource3, TOut2, TOut3, TOperator2, TOperator3>(this ReadOnlySpan<TSource1> span, SpanEnumerator<TSource2, TOut2, TOperator2> second, SpanEnumerator<TSource3, TOut3, TOperator3> third)
             where TOperator2 : ISpanOperator<TSource2, TOut2>
             where TOperator3 : ISpanOperator<TSource3, TOut3>
         {
-            return new(span, second.Source, third.Source, new(new(), second.Operator, third.Operator));
+            return new(span, new(new(new(), second.Operator, third.Operator), second.Source, third.Source));
+        }
+
+
+        public static SpanEnumerator<TSource1, (TSource1 First, TSource2 Second, TSource3 Third), Convert3Operator<TSource1, TSource2, TSource3, (TSource1 First, TSource2 Second, TSource3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TSource2, TSource3, IdentityOperator<TSource1>, IdentityOperator<TSource2>, IdentityOperator<TSource3>>>> Zip<TSource1, TSource2, TSource3>(this Span<TSource1> span, ReadOnlySpan<TSource2> second, ReadOnlySpan<TSource3> third)
+        {
+            return new(span, new(new(new(), new(), new()), second, third));
+        }
+
+        public static SpanEnumerator<TSource1, (TSource1 First, TSource2 Second, TOut3 Third), Convert3Operator<TSource1, TSource2, TSource3, (TSource1 First, TSource2 Second, TOut3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TSource2, TOut3, IdentityOperator<TSource1>, IdentityOperator<TSource2>, TOperator3>>> Zip<TSource1, TSource2, TSource3, TOut3, TOperator3>(this Span<TSource1> span, ReadOnlySpan<TSource2> second, SpanEnumerator<TSource3, TOut3, TOperator3> third)
+            where TOperator3 : ISpanOperator<TSource3, TOut3>
+        {
+            return new(span, new(new(new(), new(), third.Operator), second, third.Source));
+        }
+
+        public static SpanEnumerator<TSource1, (TSource1 First, TOut2 Second, TSource3 Third), Convert3Operator<TSource1, TSource2, TSource3, (TSource1 First, TOut2 Second, TSource3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TOut2, TSource3, IdentityOperator<TSource1>, TOperator2, IdentityOperator<TSource3>>>> Zip<TSource1, TSource2, TSource3, TOut2, TOperator2>(this Span<TSource1> span, SpanEnumerator<TSource2, TOut2, TOperator2> second, ReadOnlySpan<TSource3> third)
+            where TOperator2 : ISpanOperator<TSource2, TOut2>
+        {
+            return new(span, new(new(new(), second.Operator, new()), second.Source, third));
+        }
+
+        public static SpanEnumerator<TSource1, (TSource1 First, TOut2 Second, TOut3 Third), Convert3Operator<TSource1, TSource2, TSource3, (TSource1 First, TOut2 Second, TOut3 Third), ZipOperator<TSource1, TSource2, TSource3, TSource1, TOut2, TOut3, IdentityOperator<TSource1>, TOperator2, TOperator3>>> Zip<TSource1, TSource2, TSource3, TOut2, TOut3, TOperator2, TOperator3>(this Span<TSource1> span, SpanEnumerator<TSource2, TOut2, TOperator2> second, SpanEnumerator<TSource3, TOut3, TOperator3> third)
+            where TOperator2 : ISpanOperator<TSource2, TOut2>
+            where TOperator3 : ISpanOperator<TSource3, TOut3>
+        {
+            return new(span, new(new(new(), second.Operator, third.Operator), second.Source, third.Source));
         }
     }
 
     partial struct SpanEnumerator<TSource, TOut, TOperator>
     {
-        public SpanEnumerator3<TSource, TSource2, TSource3, (TOut First, TSource2 Second, TSource3 Third), ZipOperator<TSource, TSource2, TSource3, TOut, TSource2, TSource3, TOperator, IdentityOperator<TSource2>, IdentityOperator<TSource3>>> Zip<TSource2, TSource3>(ReadOnlySpan<TSource2> second, ReadOnlySpan<TSource3> third)
+        public SpanEnumerator<TSource, (TOut First, TSource2 Second, TSource3 Third), Convert3Operator<TSource, TSource2, TSource3, (TOut First, TSource2 Second, TSource3 Third), ZipOperator<TSource, TSource2, TSource3, TOut, TSource2, TSource3, TOperator, IdentityOperator<TSource2>, IdentityOperator<TSource3>>>> Zip<TSource2, TSource3>(ReadOnlySpan<TSource2> second, ReadOnlySpan<TSource3> third)
         {
-            return new(Source, second, third, new(Operator, new(), new()));
+            return new(Source, new(new(Operator, new(), new()), second, third));
         }
 
-        public SpanEnumerator3<TSource, TSource2, TSource3, (TOut First, TSource2 Second, TOut3 Third), ZipOperator<TSource, TSource2, TSource3, TOut, TSource2, TOut3, TOperator, IdentityOperator<TSource2>, TOperator3>> Zip<TSource2, TSource3, TOut3, TOperator3>(ReadOnlySpan<TSource2> second, SpanEnumerator<TSource3, TOut3, TOperator3> third)
+        public SpanEnumerator<TSource, (TOut First, TSource2 Second, TOut3 Third), Convert3Operator<TSource, TSource2, TSource3, (TOut First, TSource2 Second, TOut3 Third), ZipOperator<TSource, TSource2, TSource3, TOut, TSource2, TOut3, TOperator, IdentityOperator<TSource2>, TOperator3>>> Zip<TSource2, TSource3, TOut3, TOperator3>(ReadOnlySpan<TSource2> second, SpanEnumerator<TSource3, TOut3, TOperator3> third)
             where TOperator3 : ISpanOperator<TSource3, TOut3>
         {
-            return new(Source, second, third.Source, new(Operator, new(), third.Operator));
+            return new(Source, new(new(Operator, new(), third.Operator), second, third.Source));
         }
 
-        public SpanEnumerator3<TSource, TSource2, TSource3, (TOut First, TOut2 Second, TSource3 Third), ZipOperator<TSource, TSource2, TSource3, TOut, TOut2, TSource3, TOperator, TOperator2, IdentityOperator<TSource3>>> Zip<TSource2, TSource3, TOut2, TOperator2>(SpanEnumerator<TSource2, TOut2, TOperator2> second, ReadOnlySpan<TSource3> third)
+        public SpanEnumerator<TSource, (TOut First, TOut2 Second, TSource3 Third), Convert3Operator<TSource, TSource2, TSource3, (TOut First, TOut2 Second, TSource3 Third), ZipOperator<TSource, TSource2, TSource3, TOut, TOut2, TSource3, TOperator, TOperator2, IdentityOperator<TSource3>>>> Zip<TSource2, TSource3, TOut2, TOperator2>(SpanEnumerator<TSource2, TOut2, TOperator2> second, ReadOnlySpan<TSource3> third)
             where TOperator2 : ISpanOperator<TSource2, TOut2>
         {
-            return new(Source, second.Source, third, new(Operator, second.Operator, new()));
+            return new(Source, new(new(Operator, second.Operator, new()), second.Source, third));
         }
 
-        public SpanEnumerator3<TSource, TSource2, TSource3, (TOut First, TOut2 Second, TOut3 Third), ZipOperator<TSource, TSource2, TSource3, TOut, TOut2, TOut3, TOperator, TOperator2, TOperator3>> Zip<TSource2, TSource3, TOut2, TOut3, TOperator2, TOperator3>(SpanEnumerator<TSource2, TOut2, TOperator2> second, SpanEnumerator<TSource3, TOut3, TOperator3> third)
+        public SpanEnumerator<TSource, (TOut First, TOut2 Second, TOut3 Third), Convert3Operator<TSource, TSource2, TSource3, (TOut First, TOut2 Second, TOut3 Third), ZipOperator<TSource, TSource2, TSource3, TOut, TOut2, TOut3, TOperator, TOperator2, TOperator3>>> Zip<TSource2, TSource3, TOut2, TOut3, TOperator2, TOperator3>(SpanEnumerator<TSource2, TOut2, TOperator2> second, SpanEnumerator<TSource3, TOut3, TOperator3> third)
             where TOperator2 : ISpanOperator<TSource2, TOut2>
             where TOperator3 : ISpanOperator<TSource3, TOut3>
         {
-            return new(Source, second.Source, third.Source, new(Operator, second.Operator, third.Operator));
+            return new(Source, new(new(Operator, second.Operator, third.Operator), second.Source, third.Source));
         }
     }
 

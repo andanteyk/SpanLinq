@@ -2,80 +2,80 @@ namespace SpanLinq
 {
     public static partial class SpanEnumerable
     {
-        public static SpanEnumerator2<TIn, TSource2, TIn, IntersectOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, EqualityComparer<TIn>>> Intersect<TIn, TSource2, TOperator2>(this ReadOnlySpan<TIn> span, SpanEnumerator<TSource2, TIn, TOperator2> second)
-            where TOperator2 : ISpanOperator<TSource2, TIn>
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TIn, TIn, IntersectOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, EqualityComparer<TIn>>>> Intersect<TIn>(this ReadOnlySpan<TIn> first, ReadOnlySpan<TIn> second)
         {
-            return new(span, second.Source, new(new(), second.Operator, EqualityComparer<TIn>.Default));
+            return new(first, new(new(new(), new(), EqualityComparer<TIn>.Default), second));
         }
 
-        public static SpanEnumerator2<TIn, TIn, TIn, IntersectOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, EqualityComparer<TIn>>> Intersect<TIn>(this ReadOnlySpan<TIn> span, ReadOnlySpan<TIn> second)
-        {
-            return new(span, second, new(new(), new(), EqualityComparer<TIn>.Default));
-        }
-
-        public static SpanEnumerator2<TIn, TSource2, TIn, IntersectOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, TComparer>> Intersect<TIn, TSource2, TOperator2, TComparer>(this ReadOnlySpan<TIn> span, SpanEnumerator<TSource2, TIn, TOperator2> second, TComparer comparer)
-            where TOperator2 : ISpanOperator<TSource2, TIn>
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TIn, TIn, IntersectOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, TComparer>>> Intersect<TIn, TComparer>(this ReadOnlySpan<TIn> first, ReadOnlySpan<TIn> second, TComparer comparer)
             where TComparer : IEqualityComparer<TIn>
         {
-            return new(span, second.Source, new(new(), second.Operator, comparer));
+            return new(first, new(new(new(), new(), comparer), second));
         }
 
-        public static SpanEnumerator2<TIn, TIn, TIn, IntersectOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, TComparer>> Intersect<TIn, TComparer>(this ReadOnlySpan<TIn> span, ReadOnlySpan<TIn> second, TComparer comparer)
-            where TComparer : IEqualityComparer<TIn>
-        {
-            return new(span, second, new(new(), new(), comparer));
-        }
-
-
-        public static SpanEnumerator2<TIn, TSource2, TIn, IntersectOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, EqualityComparer<TIn>>> Intersect<TIn, TSource2, TOperator2>(this Span<TIn> span, SpanEnumerator<TSource2, TIn, TOperator2> second)
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TSource2, TIn, IntersectOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, EqualityComparer<TIn>>>> Intersect<TIn, TSource2, TOperator2>(this ReadOnlySpan<TIn> first, SpanEnumerator<TSource2, TIn, TOperator2> second)
             where TOperator2 : ISpanOperator<TSource2, TIn>
         {
-            return new(span, second.Source, new(new(), second.Operator, EqualityComparer<TIn>.Default));
+            return new(first, new(new(new(), second.Operator, EqualityComparer<TIn>.Default), second.Source));
         }
 
-        public static SpanEnumerator2<TIn, TIn, TIn, IntersectOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, EqualityComparer<TIn>>> Intersect<TIn>(this Span<TIn> span, ReadOnlySpan<TIn> second)
-        {
-            return new(span, second, new(new(), new(), EqualityComparer<TIn>.Default));
-        }
-
-        public static SpanEnumerator2<TIn, TSource2, TIn, IntersectOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, TComparer>> Intersect<TIn, TSource2, TOperator2, TComparer>(this Span<TIn> span, SpanEnumerator<TSource2, TIn, TOperator2> second, TComparer comparer)
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TSource2, TIn, IntersectOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, TComparer>>> Intersect<TIn, TSource2, TOperator2, TComparer>(this ReadOnlySpan<TIn> first, SpanEnumerator<TSource2, TIn, TOperator2> second, TComparer comparer)
             where TOperator2 : ISpanOperator<TSource2, TIn>
             where TComparer : IEqualityComparer<TIn>
         {
-            return new(span, second.Source, new(new(), second.Operator, comparer));
+            return new(first, new(new(new(), second.Operator, comparer), second.Source));
         }
 
-        public static SpanEnumerator2<TIn, TIn, TIn, IntersectOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, TComparer>> Intersect<TIn, TComparer>(this Span<TIn> span, ReadOnlySpan<TIn> second, TComparer comparer)
+
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TIn, TIn, IntersectOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, EqualityComparer<TIn>>>> Intersect<TIn>(this Span<TIn> first, ReadOnlySpan<TIn> second)
+        {
+            return new(first, new(new(new(), new(), EqualityComparer<TIn>.Default), second));
+        }
+
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TIn, TIn, IntersectOperator<TIn, TIn, TIn, IdentityOperator<TIn>, IdentityOperator<TIn>, TComparer>>> Intersect<TIn, TComparer>(this Span<TIn> first, ReadOnlySpan<TIn> second, TComparer comparer)
             where TComparer : IEqualityComparer<TIn>
         {
-            return new(span, second, new(new(), new(), comparer));
+            return new(first, new(new(new(), new(), comparer), second));
+        }
+
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TSource2, TIn, IntersectOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, EqualityComparer<TIn>>>> Intersect<TIn, TSource2, TOperator2>(this Span<TIn> first, SpanEnumerator<TSource2, TIn, TOperator2> second)
+            where TOperator2 : ISpanOperator<TSource2, TIn>
+        {
+            return new(first, new(new(new(), second.Operator, EqualityComparer<TIn>.Default), second.Source));
+        }
+
+        public static SpanEnumerator<TIn, TIn, Convert2Operator<TIn, TSource2, TIn, IntersectOperator<TIn, TSource2, TIn, IdentityOperator<TIn>, TOperator2, TComparer>>> Intersect<TIn, TSource2, TOperator2, TComparer>(this Span<TIn> first, SpanEnumerator<TSource2, TIn, TOperator2> second, TComparer comparer)
+            where TOperator2 : ISpanOperator<TSource2, TIn>
+            where TComparer : IEqualityComparer<TIn>
+        {
+            return new(first, new(new(new(), second.Operator, comparer), second.Source));
         }
     }
 
     partial struct SpanEnumerator<TSource, TOut, TOperator>
     {
-        public SpanEnumerator2<TSource, TSource2, TOut, IntersectOperator<TSource, TSource2, TOut, TOperator, TOperator2, EqualityComparer<TOut>>> Intersect<TSource2, TOperator2>(SpanEnumerator<TSource2, TOut, TOperator2> second)
+        public SpanEnumerator<TSource, TOut, Convert2Operator<TSource, TOut, TOut, IntersectOperator<TSource, TOut, TOut, TOperator, IdentityOperator<TOut>, EqualityComparer<TOut>>>> Intersect(ReadOnlySpan<TOut> second)
+        {
+            return new(Source, new(new(Operator, new(), EqualityComparer<TOut>.Default), second));
+        }
+
+        public SpanEnumerator<TSource, TOut, Convert2Operator<TSource, TOut, TOut, IntersectOperator<TSource, TOut, TOut, TOperator, IdentityOperator<TOut>, TComparer>>> Intersect<TComparer>(ReadOnlySpan<TOut> second, TComparer comparer)
+            where TComparer : IEqualityComparer<TOut>
+        {
+            return new(Source, new(new(Operator, new(), comparer), second));
+        }
+
+        public SpanEnumerator<TSource, TOut, Convert2Operator<TSource, TSource2, TOut, IntersectOperator<TSource, TSource2, TOut, TOperator, TOperator2, EqualityComparer<TOut>>>> Intersect<TSource2, TOperator2>(SpanEnumerator<TSource2, TOut, TOperator2> second)
             where TOperator2 : ISpanOperator<TSource2, TOut>
         {
-            return new(Source, second.Source, new(Operator, second.Operator, EqualityComparer<TOut>.Default));
+            return new(Source, new(new(Operator, second.Operator, EqualityComparer<TOut>.Default), second.Source));
         }
 
-        public SpanEnumerator2<TSource, TOut, TOut, IntersectOperator<TSource, TOut, TOut, TOperator, IdentityOperator<TOut>, EqualityComparer<TOut>>> Intersect(ReadOnlySpan<TOut> second)
-        {
-            return new(Source, second, new(Operator, new IdentityOperator<TOut>(), EqualityComparer<TOut>.Default));
-        }
-
-        public SpanEnumerator2<TSource, TSource2, TOut, IntersectOperator<TSource, TSource2, TOut, TOperator, TOperator2, TComparer>> Intersect<TSource2, TOperator2, TComparer>(SpanEnumerator<TSource2, TOut, TOperator2> second, TComparer comparer)
+        public SpanEnumerator<TSource, TOut, Convert2Operator<TSource, TSource2, TOut, IntersectOperator<TSource, TSource2, TOut, TOperator, TOperator2, TComparer>>> Intersect<TSource2, TOperator2, TComparer>(SpanEnumerator<TSource2, TOut, TOperator2> second, TComparer comparer)
             where TOperator2 : ISpanOperator<TSource2, TOut>
             where TComparer : IEqualityComparer<TOut>
         {
-            return new(Source, second.Source, new(Operator, second.Operator, comparer));
-        }
-
-        public SpanEnumerator2<TSource, TOut, TOut, IntersectOperator<TSource, TOut, TOut, TOperator, IdentityOperator<TOut>, TComparer>> Intersect<TComparer>(ReadOnlySpan<TOut> second, TComparer comparer)
-            where TComparer : IEqualityComparer<TOut>
-        {
-            return new(Source, second, new(Operator, new IdentityOperator<TOut>(), comparer));
+            return new(Source, new(new(Operator, second.Operator, comparer), second.Source));
         }
     }
 

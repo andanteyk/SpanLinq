@@ -11,7 +11,7 @@ namespace SpanLinq.Benchmarks
         [Benchmark, BenchmarkCategory("Span", "IntersectBy")]
         public void SpanIntersectBy()
         {
-            Range.AsSpan().IntersectBy(Range, i => i).ToEnumerator().Consume(Helper.Consumer);
+            Range.AsSpan().IntersectBy(Range, i => i).Consume(Helper.Consumer);
         }
 
         [Benchmark, BenchmarkCategory("System", "IntersectBy")]

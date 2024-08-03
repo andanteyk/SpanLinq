@@ -11,7 +11,7 @@ namespace SpanLinq.Benchmarks
         public void SpanJoin()
         {
             // TODO: some error in type inference?
-            Range.AsSpan().Join<int, int, int, int>(Range, i => i, i => i, (a, b) => a).ToEnumerator().Consume(Helper.Consumer);
+            Range.AsSpan().Join<int, int, int, int>(Range, i => i, i => i, (a, b) => a).Consume(Helper.Consumer);
         }
 
         [Benchmark, BenchmarkCategory("System", "Join")]

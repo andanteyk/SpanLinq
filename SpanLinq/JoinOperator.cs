@@ -1,83 +1,81 @@
-using System.Transactions;
-
 namespace SpanLinq
 {
     public static partial class SpanEnumerable
     {
-        public static SpanEnumerator2<TOuter, TSource2, TResult, JoinOperator<TOuter, TSource2, TResult, IdentityOperator<TOuter>, TOperator2, TOuter, TInner, TKey, EqualityComparer<TKey>>> Join<TSource2, TOperator2, TOuter, TInner, TResult, TKey>(this ReadOnlySpan<TOuter> span, SpanEnumerator<TSource2, TInner, TOperator2> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
-            where TOperator2 : ISpanOperator<TSource2, TInner>
+        public static SpanEnumerator<TOuter, TResult, Convert2Operator<TOuter, TInner, TResult, JoinOperator<TOuter, TInner, TResult, IdentityOperator<TOuter>, IdentityOperator<TInner>, TOuter, TInner, TKey, EqualityComparer<TKey>>>> Join<TOuter, TInner, TResult, TKey>(this ReadOnlySpan<TOuter> span, ReadOnlySpan<TInner> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
         {
-            return new(span, second.Source, new(new(), second.Operator, outerKeySelector, innerKeySelector, resultSelector, EqualityComparer<TKey>.Default));
+            return new(span, new(new(new(), new(), outerKeySelector, innerKeySelector, resultSelector, EqualityComparer<TKey>.Default), second));
         }
 
-        public static SpanEnumerator2<TOuter, TInner, TResult, JoinOperator<TOuter, TInner, TResult, IdentityOperator<TOuter>, IdentityOperator<TInner>, TOuter, TInner, TKey, EqualityComparer<TKey>>> Join<TOuter, TInner, TResult, TKey>(this ReadOnlySpan<TOuter> span, ReadOnlySpan<TInner> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
-        {
-            return new(span, second, new(new(), new(), outerKeySelector, innerKeySelector, resultSelector, EqualityComparer<TKey>.Default));
-        }
-
-        public static SpanEnumerator2<TOuter, TSource2, TResult, JoinOperator<TOuter, TSource2, TResult, IdentityOperator<TOuter>, TOperator2, TOuter, TInner, TKey, TComparer>> Join<TSource2, TOperator2, TOuter, TInner, TResult, TKey, TComparer>(this ReadOnlySpan<TOuter> span, SpanEnumerator<TSource2, TInner, TOperator2> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector, TComparer comparer)
-            where TOperator2 : ISpanOperator<TSource2, TInner>
+        public static SpanEnumerator<TOuter, TResult, Convert2Operator<TOuter, TInner, TResult, JoinOperator<TOuter, TInner, TResult, IdentityOperator<TOuter>, IdentityOperator<TInner>, TOuter, TInner, TKey, TComparer>>> Join<TOuter, TInner, TResult, TKey, TComparer>(this ReadOnlySpan<TOuter> span, ReadOnlySpan<TInner> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector, TComparer comparer)
             where TComparer : IEqualityComparer<TKey>
         {
-            return new(span, second.Source, new(new(), second.Operator, outerKeySelector, innerKeySelector, resultSelector, comparer));
+            return new(span, new(new(new(), new(), outerKeySelector, innerKeySelector, resultSelector, comparer), second));
         }
 
-        public static SpanEnumerator2<TOuter, TInner, TResult, JoinOperator<TOuter, TInner, TResult, IdentityOperator<TOuter>, IdentityOperator<TInner>, TOuter, TInner, TKey, TComparer>> Join<TOuter, TInner, TResult, TKey, TComparer>(this ReadOnlySpan<TOuter> span, ReadOnlySpan<TInner> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector, TComparer comparer)
-            where TComparer : IEqualityComparer<TKey>
-        {
-            return new(span, second, new(new(), new(), outerKeySelector, innerKeySelector, resultSelector, comparer));
-        }
-
-
-        public static SpanEnumerator2<TOuter, TSource2, TResult, JoinOperator<TOuter, TSource2, TResult, IdentityOperator<TOuter>, TOperator2, TOuter, TInner, TKey, EqualityComparer<TKey>>> Join<TSource2, TOperator2, TOuter, TInner, TResult, TKey>(this Span<TOuter> span, SpanEnumerator<TSource2, TInner, TOperator2> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+        public static SpanEnumerator<TOuter, TResult, Convert2Operator<TOuter, TSource2, TResult, JoinOperator<TOuter, TSource2, TResult, IdentityOperator<TOuter>, TOperator2, TOuter, TInner, TKey, EqualityComparer<TKey>>>> Join<TSource2, TOperator2, TOuter, TInner, TResult, TKey>(this ReadOnlySpan<TOuter> span, SpanEnumerator<TSource2, TInner, TOperator2> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
             where TOperator2 : ISpanOperator<TSource2, TInner>
         {
-            return new(span, second.Source, new(new(), second.Operator, outerKeySelector, innerKeySelector, resultSelector, EqualityComparer<TKey>.Default));
+            return new(span, new(new(new(), second.Operator, outerKeySelector, innerKeySelector, resultSelector, EqualityComparer<TKey>.Default), second.Source));
         }
 
-        public static SpanEnumerator2<TOuter, TInner, TResult, JoinOperator<TOuter, TInner, TResult, IdentityOperator<TOuter>, IdentityOperator<TInner>, TOuter, TInner, TKey, EqualityComparer<TKey>>> Join<TOuter, TInner, TResult, TKey>(this Span<TOuter> span, ReadOnlySpan<TInner> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
-        {
-            return new(span, second, new(new(), new(), outerKeySelector, innerKeySelector, resultSelector, EqualityComparer<TKey>.Default));
-        }
-
-        public static SpanEnumerator2<TOuter, TSource2, TResult, JoinOperator<TOuter, TSource2, TResult, IdentityOperator<TOuter>, TOperator2, TOuter, TInner, TKey, TComparer>> Join<TSource2, TOperator2, TOuter, TInner, TResult, TKey, TComparer>(this Span<TOuter> span, SpanEnumerator<TSource2, TInner, TOperator2> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector, TComparer comparer)
+        public static SpanEnumerator<TOuter, TResult, Convert2Operator<TOuter, TSource2, TResult, JoinOperator<TOuter, TSource2, TResult, IdentityOperator<TOuter>, TOperator2, TOuter, TInner, TKey, TComparer>>> Join<TSource2, TOperator2, TOuter, TInner, TResult, TKey, TComparer>(this ReadOnlySpan<TOuter> span, SpanEnumerator<TSource2, TInner, TOperator2> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector, TComparer comparer)
             where TOperator2 : ISpanOperator<TSource2, TInner>
             where TComparer : IEqualityComparer<TKey>
         {
-            return new(span, second.Source, new(new(), second.Operator, outerKeySelector, innerKeySelector, resultSelector, comparer));
+            return new(span, new(new(new(), second.Operator, outerKeySelector, innerKeySelector, resultSelector, comparer), second.Source));
         }
 
-        public static SpanEnumerator2<TOuter, TInner, TResult, JoinOperator<TOuter, TInner, TResult, IdentityOperator<TOuter>, IdentityOperator<TInner>, TOuter, TInner, TKey, TComparer>> Join<TOuter, TInner, TResult, TKey, TComparer>(this Span<TOuter> span, ReadOnlySpan<TInner> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector, TComparer comparer)
+
+        public static SpanEnumerator<TOuter, TResult, Convert2Operator<TOuter, TInner, TResult, JoinOperator<TOuter, TInner, TResult, IdentityOperator<TOuter>, IdentityOperator<TInner>, TOuter, TInner, TKey, EqualityComparer<TKey>>>> Join<TOuter, TInner, TResult, TKey>(this Span<TOuter> span, ReadOnlySpan<TInner> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+        {
+            return new(span, new(new(new(), new(), outerKeySelector, innerKeySelector, resultSelector, EqualityComparer<TKey>.Default), second));
+        }
+
+        public static SpanEnumerator<TOuter, TResult, Convert2Operator<TOuter, TInner, TResult, JoinOperator<TOuter, TInner, TResult, IdentityOperator<TOuter>, IdentityOperator<TInner>, TOuter, TInner, TKey, TComparer>>> Join<TOuter, TInner, TResult, TKey, TComparer>(this Span<TOuter> span, ReadOnlySpan<TInner> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector, TComparer comparer)
             where TComparer : IEqualityComparer<TKey>
         {
-            return new(span, second, new(new(), new(), outerKeySelector, innerKeySelector, resultSelector, comparer));
+            return new(span, new(new(new(), new(), outerKeySelector, innerKeySelector, resultSelector, comparer), second));
+        }
+
+        public static SpanEnumerator<TOuter, TResult, Convert2Operator<TOuter, TSource2, TResult, JoinOperator<TOuter, TSource2, TResult, IdentityOperator<TOuter>, TOperator2, TOuter, TInner, TKey, EqualityComparer<TKey>>>> Join<TSource2, TOperator2, TOuter, TInner, TResult, TKey>(this Span<TOuter> span, SpanEnumerator<TSource2, TInner, TOperator2> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+            where TOperator2 : ISpanOperator<TSource2, TInner>
+        {
+            return new(span, new(new(new(), second.Operator, outerKeySelector, innerKeySelector, resultSelector, EqualityComparer<TKey>.Default), second.Source));
+        }
+
+        public static SpanEnumerator<TOuter, TResult, Convert2Operator<TOuter, TSource2, TResult, JoinOperator<TOuter, TSource2, TResult, IdentityOperator<TOuter>, TOperator2, TOuter, TInner, TKey, TComparer>>> Join<TSource2, TOperator2, TOuter, TInner, TResult, TKey, TComparer>(this Span<TOuter> span, SpanEnumerator<TSource2, TInner, TOperator2> second, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector, TComparer comparer)
+            where TOperator2 : ISpanOperator<TSource2, TInner>
+            where TComparer : IEqualityComparer<TKey>
+        {
+            return new(span, new(new(new(), second.Operator, outerKeySelector, innerKeySelector, resultSelector, comparer), second.Source));
         }
     }
 
     partial struct SpanEnumerator<TSource, TOut, TOperator>
     {
-        public SpanEnumerator2<TSource, TSource2, TResult, JoinOperator<TSource, TSource2, TResult, TOperator, TOperator2, TOut, TInner, TKey, EqualityComparer<TKey>>> Join<TSource2, TOperator2, TInner, TKey, TResult>(SpanEnumerator<TSource2, TInner, TOperator2> second, Func<TOut, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOut, TInner, TResult> resultSelector)
+        public SpanEnumerator<TSource, TResult, Convert2Operator<TSource, TInner, TResult, JoinOperator<TSource, TInner, TResult, TOperator, IdentityOperator<TInner>, TOut, TInner, TKey, EqualityComparer<TKey>>>> Join<TInner, TKey, TResult>(ReadOnlySpan<TInner> second, Func<TOut, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOut, TInner, TResult> resultSelector)
+        {
+            return new(Source, new(new(Operator, new(), outerKeySelector, innerKeySelector, resultSelector, EqualityComparer<TKey>.Default), second));
+        }
+
+        public SpanEnumerator<TSource, TResult, Convert2Operator<TSource, TInner, TResult, JoinOperator<TSource, TInner, TResult, TOperator, IdentityOperator<TInner>, TOut, TInner, TKey, TComparer>>> Join<TInner, TKey, TResult, TComparer>(ReadOnlySpan<TInner> second, Func<TOut, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOut, TInner, TResult> resultSelector, TComparer comparer)
+            where TComparer : IEqualityComparer<TKey>
+        {
+            return new(Source, new(new(Operator, new(), outerKeySelector, innerKeySelector, resultSelector, comparer), second));
+        }
+
+        public SpanEnumerator<TSource, TResult, Convert2Operator<TSource, TSource2, TResult, JoinOperator<TSource, TSource2, TResult, TOperator, TOperator2, TOut, TInner, TKey, EqualityComparer<TKey>>>> Join<TSource2, TOperator2, TInner, TKey, TResult>(SpanEnumerator<TSource2, TInner, TOperator2> second, Func<TOut, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOut, TInner, TResult> resultSelector)
             where TOperator2 : ISpanOperator<TSource2, TInner>
         {
-            return new(Source, second.Source, new(Operator, second.Operator, outerKeySelector, innerKeySelector, resultSelector, EqualityComparer<TKey>.Default));
+            return new(Source, new(new(Operator, second.Operator, outerKeySelector, innerKeySelector, resultSelector, EqualityComparer<TKey>.Default), second.Source));
         }
 
-        public SpanEnumerator2<TSource, TInner, TResult, JoinOperator<TSource, TInner, TResult, TOperator, IdentityOperator<TInner>, TOut, TInner, TKey, EqualityComparer<TKey>>> Join<TInner, TKey, TResult>(ReadOnlySpan<TInner> second, Func<TOut, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOut, TInner, TResult> resultSelector)
-        {
-            return new(Source, second, new(Operator, new IdentityOperator<TInner>(), outerKeySelector, innerKeySelector, resultSelector, EqualityComparer<TKey>.Default));
-        }
-
-        public SpanEnumerator2<TSource, TSource2, TResult, JoinOperator<TSource, TSource2, TResult, TOperator, TOperator2, TOut, TInner, TKey, TComparer>> Join<TSource2, TOperator2, TInner, TKey, TResult, TComparer>(SpanEnumerator<TSource2, TInner, TOperator2> second, Func<TOut, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOut, TInner, TResult> resultSelector, TComparer comparer)
+        public SpanEnumerator<TSource, TResult, Convert2Operator<TSource, TSource2, TResult, JoinOperator<TSource, TSource2, TResult, TOperator, TOperator2, TOut, TInner, TKey, TComparer>>> Join<TSource2, TOperator2, TInner, TKey, TResult, TComparer>(SpanEnumerator<TSource2, TInner, TOperator2> second, Func<TOut, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOut, TInner, TResult> resultSelector, TComparer comparer)
             where TOperator2 : ISpanOperator<TSource2, TInner>
             where TComparer : IEqualityComparer<TKey>
         {
-            return new(Source, second.Source, new(Operator, second.Operator, outerKeySelector, innerKeySelector, resultSelector, comparer));
-        }
-
-        public SpanEnumerator2<TSource, TInner, TResult, JoinOperator<TSource, TInner, TResult, TOperator, IdentityOperator<TInner>, TOut, TInner, TKey, TComparer>> Join<TInner, TKey, TResult, TComparer>(ReadOnlySpan<TInner> second, Func<TOut, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOut, TInner, TResult> resultSelector, TComparer comparer)
-            where TComparer : IEqualityComparer<TKey>
-        {
-            return new(Source, second, new(Operator, new IdentityOperator<TInner>(), outerKeySelector, innerKeySelector, resultSelector, comparer));
+            return new(Source, new(new(Operator, second.Operator, outerKeySelector, innerKeySelector, resultSelector, comparer), second.Source));
         }
     }
 
@@ -92,6 +90,7 @@ namespace SpanLinq
         internal Func<TInner, TKey> InnerKeySelector;
         internal Func<TOuter, TInner, TResult> ResultSelector;
         internal readonly TComparer Comparer;
+
         internal ArrayPoolDictionary<TKey, ArrayPoolList<TInner>>? Dictionary;
         internal TOuter CurrentOuter;
         internal ArrayPoolList<TInner>? CurrentInners;

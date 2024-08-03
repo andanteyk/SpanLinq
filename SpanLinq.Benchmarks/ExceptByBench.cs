@@ -10,7 +10,7 @@ namespace SpanLinq.Benchmarks
         [Benchmark, BenchmarkCategory("Span", "ExceptBy")]
         public void SpanExceptBy()
         {
-            Range.AsSpan().ExceptBy(Range, i => i % 12).ToEnumerator().Consume(Helper.Consumer);
+            Range.AsSpan().ExceptBy(Range, i => i % 12).Consume(Helper.Consumer);
         }
 
         [Benchmark, BenchmarkCategory("System", "ExceptBy")]
