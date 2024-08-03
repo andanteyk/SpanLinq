@@ -2,6 +2,13 @@
 
 Lightweight, Zero Allocation LINQ Implementation on `Span<T>`
 
+<a href="https://www.nuget.org/packages/AndanteSoft.SpanLinq">![NuGet Version](https://img.shields.io/nuget/vpre/AndanteSoft.SpanLinq)
+</a>
+<a href="LICENSE">![GitHub License](https://img.shields.io/github/license/andanteyk/SpanLinq)</a>
+<a href="https://www.nuget.org/packages/AndanteSoft.SpanLinq">![NuGet Downloads](https://img.shields.io/nuget/dt/AndanteSoft.SpanLinq)</a> 
+
+![Logo](https://raw.githubusercontent.com/andanteyk/SpanLinq/main/SpanLinq.png)
+
 ## Usage
 
 It's almost the same as [LINQ](https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable?view=net-9.0), but it's implemented as an extension method on `Span<T>` / `ReadOnlySpan<T>` and can also be accessed starting from a `SpanEnumerable`.
@@ -23,7 +30,19 @@ string largestString = array.AsSpan()
 
 ## Install
 
-// TODO.
+SpanLinq can be installed from NuGet `AndanteSoft.SpanLinq`.
+
+```
+dotnet add package AndanteSoft.SpanLinq 
+```
+
+### Unity
+
+Supported version: 2021.2 or later. (API Compatibility Level: .NET Standard 2.1)
+
+My test environment is 2022.2.17f1.
+
+Use [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity) to install.
 
 ### Fork
 
@@ -51,7 +70,7 @@ dotnet run -c Release --project SpanLinq.Benchmarks
 
 * It covers **ALL LINQ methods** implemented up to .NET 9 Preview 6.
     If you're tied to the old .NET you can still benefit from the new methods.
-* It produces **no GC garbage**, reducing pressure on the garbage collector and improving performance.
+* It produces **no GC garbage** (except when allocation is unavoidable, such as `ToList()`), reducing pressure on the garbage collector and improving performance.
 * This requires **.NET Standard 2.1**, which means **it can be used in Unity**.
 * Like LINQ, **it supports deferred execution**, although it is somewhat limited by the nature of a `Span<T>`.
 
@@ -65,7 +84,9 @@ dotnet run -c Release --project SpanLinq.Benchmarks
 
 See [docs/BenchmarkResult.md](docs/BenchmarkResult.md).
 
-`System***` are `System.Linq.Enumerable.***`, `Span***` are `SpanLinq.SpanEnumerable.***`, and `Handcrafted***` are optimized codes that uses `Span<T>` directly. 
+* `System***` are `System.Linq.Enumerable.***`
+* `Span***` are `SpanLinq.SpanEnumerable.***`
+* `Handcrafted***` are optimized codes that uses `Span<T>` directly. 
 
 ## Specific differences between `System.Linq.Enumerable`
 
@@ -89,6 +110,12 @@ To avoid this, materialize query using `ToArray()` or `CopyTo()` etc.
 ### `AsEnumerable()`
 
 `AsEnumerable()` is a method that is almost meaningless in `System.Linq`, but since `Span<T>` is not `IEnumerable<T>`, this method converts `Span<T>` into a class that implements `IEnumerable<T>` and returns it.
+
+Currently, it allocates 32 B per call.
+
+### `Chunk()`
+
+Since it returns an array, allocation occurs.
 
 ### `CopyTo()`
 
@@ -119,6 +146,11 @@ static IEnumerable<string> Sample()
 var spanEnumerable = SpanEnumerable.FromEnumerable(Sample());
 ```
 
+### `GroupBy()`
+
+Since it returns `IGrouping<TKey, TElement>`, allocation occurs.
+
+
 ### `Shuffle()`
 
 This method does not exist in LINQ. This is the original implementation.
@@ -136,3 +168,6 @@ This method gets a shared array via `ArrayPool<T>.Shared.Rent()` and returns the
 
 When you're done with the data, you must return the array via `ArrayPool<T>.Shared.Return()`.
 
+### `ToArray()` / `ToDictionary()` / `ToHashSet()` / `ToList()` / `ToLookup()`
+
+It is by nature that allocation occurs.
