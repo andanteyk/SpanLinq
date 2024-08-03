@@ -67,15 +67,31 @@ namespace SpanLinq
         {
             if (Index == -1)
             {
-                var sourceSpan = SpanEnumerator<TSpan, TIn, TOperator>.ToArrayPool(source, Operator, out SourceArray);
-                SourceLength = Math.Max(sourceSpan.Length - SkipCount, 0);
-                Index = 0;
+                if (Operator is IdentityOperator<TIn>)
+                {
+                    SourceLength = Math.Max(source.Length - SkipCount, 0);
+                    source = source[..SourceLength];
+                    Index = 0;
+                }
+                else
+                {
+                    var sourceSpan = SpanEnumerator<TSpan, TIn, TOperator>.ToArrayPool(source, Operator, out SourceArray);
+                    SourceLength = Math.Max(sourceSpan.Length - SkipCount, 0);
+                    Index = 0;
+                }
             }
 
             if (Index < SourceLength)
             {
-                success = true;
-                return SourceArray![Index++];
+                if (Operator is IdentityOperator<TIn>)
+                {
+                    return Operator.TryMoveNext(ref source, out success);
+                }
+                else
+                {
+                    success = true;
+                    return SourceArray![Index++];
+                }
             }
             else
             {

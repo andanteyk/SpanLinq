@@ -18,13 +18,32 @@ string[] array =
 
 string largestString = array.AsSpan()
     .Union(new[] { "apple", "banana" })
-    .ToEnumerator()
     .MaxBy(s => s.Length);
 ```
 
 ## Install
 
 // TODO.
+
+### Fork
+
+#### Build
+
+```
+dotnet build
+```
+
+#### Run tests
+
+```
+dotnet test
+```
+
+#### Run benchmarks
+
+```
+dotnet run -c Release --project SpanLinq.Benchmarks
+```
 
 ## Feature
 
@@ -40,7 +59,7 @@ string largestString = array.AsSpan()
 
 * No GC garbage is not magic. It utilizes memory pools, so memory consumption during execution can be relatively high. (TODO: citation needed)
 * Some methods are not fully optimized and may result in slower performance than LINQ.
-    * Of course it depends on the method. Some are twice as fast, some are twice as slow.
+    * Of course it depends on the method. Some are twice as fast, some are twice as slow. See [Performance](#Performance).
 
 ## Performance
 
@@ -63,20 +82,11 @@ int min = query.Min();
 int max = query.Max();
 ```
 
-To avoid this, instantiate query using `ToArray()` or `CopyTo()` etc.
+To avoid this, materialize query using `ToArray()` or `CopyTo()` etc.
 
 ### `AsEnumerable()`
 
 `AsEnumerable()` is a method that is almost meaningless in `System.Linq`, but since `Span<T>` is not `IEnumerable<T>`, this method converts `Span<T>` into a class that implements `IEnumerable<T>` and returns it.
-
-### `Concat()`, `ExceptBy()`, `Except()`, `GroupJoin()`, `IntersectBy()`, `Intersect()`, `Join()`, `UnionBy()`, `Union()`, `Zip()`
-
-Methods that take two/three sequences (`Span<T>`) as arguments return a special object.
-To use this, you need to instantiate it with `ToEnumerator()`.
-`ToEnumerator()` is executed immediately, and all elements are instantiated.
-
-This is an implementation constraint and shortcoming, so I hope it will be improved in the future.
-This will be resolved when `allows ref struct` is available in Unity, but who knows when that will be...
 
 ### `CopyTo()`
 

@@ -45,6 +45,12 @@ namespace SpanLinq
 
         public TIn TryMoveNext(ref ReadOnlySpan<TSpan> source, out bool success)
         {
+            if (SkipCount > 0 && Operator is IdentityOperator<TIn>)
+            {
+                source = source[Math.Min(SkipCount, source.Length)..];
+                SkipCount = 0;
+            }
+
             while (SkipCount > 0)
             {
                 Operator.TryMoveNext(ref source, out bool ok);

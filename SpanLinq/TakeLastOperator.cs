@@ -65,17 +65,34 @@ namespace SpanLinq
 
         public TIn TryMoveNext(ref ReadOnlySpan<TSpan> source, out bool success)
         {
+
             if (Index == -1)
             {
-                var sourceSpan = SpanEnumerator<TSpan, TIn, TOperator>.ToArrayPool(source, Operator, out SourceArray);
-                SourceLength = sourceSpan.Length;
-                Index = Math.Max(SourceLength - Math.Max(TakeCount, 0), 0);
+                if (Operator is IdentityOperator<TIn>)
+                {
+                    SourceLength = Math.Min(TakeCount, source.Length);
+                    source = source[(source.Length - SourceLength)..];
+                    Index = 0;
+                }
+                else
+                {
+                    var sourceSpan = SpanEnumerator<TSpan, TIn, TOperator>.ToArrayPool(source, Operator, out SourceArray);
+                    SourceLength = sourceSpan.Length;
+                    Index = Math.Max(SourceLength - Math.Max(TakeCount, 0), 0);
+                }
             }
 
             if (Index < SourceLength)
             {
-                success = true;
-                return SourceArray![Index++];
+                if (Operator is IdentityOperator<TIn>)
+                {
+                    return Operator.TryMoveNext(ref source, out success);
+                }
+                else
+                {
+                    success = true;
+                    return SourceArray![Index++];
+                }
             }
             else
             {
