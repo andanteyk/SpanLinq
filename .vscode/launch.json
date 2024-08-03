@@ -6,13 +6,6 @@
             "type": "dotnet",
             "request": "launch",
             "projectPath": "${workspaceFolder}/SpanLinq.Benchmarks/SpanLinq.Benchmarks.csproj"
-        },
-        {
-            "name": "C#: Playground",
-            "type": "dotnet",
-            "request": "launch",
-            "projectPath": "${workspaceFolder}\\playground\\Playground.csproj",
-            "launchConfigurationId": "TargetFramework=;Playground",
         }
     ]
 }

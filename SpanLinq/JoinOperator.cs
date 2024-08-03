@@ -94,6 +94,7 @@ namespace SpanLinq
         internal ArrayPoolDictionary<TKey, ArrayPoolList<TInner>>? Dictionary;
         internal TOuter CurrentOuter;
         internal ArrayPoolList<TInner>? CurrentInners;
+        internal int CurrentInnerIndex;
         internal bool Initialized;
 
         internal JoinOperator(TOperator1 operator1, TOperator2 operator2, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector, TComparer comparer)
@@ -107,6 +108,7 @@ namespace SpanLinq
             Dictionary = null;
             CurrentOuter = default!;
             CurrentInners = null;
+            CurrentInnerIndex = 0;
             Initialized = false;
         }
 
@@ -177,7 +179,7 @@ namespace SpanLinq
                 return default!;
             }
 
-            if (CurrentInners.Count == 0)
+            while (CurrentInnerIndex >= CurrentInners.Count)
             {
                 while (true)
                 {
@@ -193,16 +195,16 @@ namespace SpanLinq
                     if (Dictionary!.TryGetValue(current1Key, out var list))
                     {
                         CurrentOuter = current1;
+                        CurrentInners.Clear();
                         CurrentInners.AddRange(list);
+                        CurrentInnerIndex = 0;
                         break;
                     }
                 }
             }
 
-            var result = ResultSelector(CurrentOuter, CurrentInners[0]);
-            CurrentInners.RemoveAt(0);
             success = true;
-            return result;
+            return ResultSelector(CurrentOuter, CurrentInners[CurrentInnerIndex++]);
         }
     }
 }

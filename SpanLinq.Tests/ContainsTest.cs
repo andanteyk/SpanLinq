@@ -11,6 +11,6 @@ public class ContainsTest
 
         Assert.AreEqual(false, SpanEnumerable.Empty<int>().Contains(2));
 
-        Assert.AreEqual(true, SpanEnumerable.Range(0, 10).Contains(12, EqualityComparer<int>.Create((a, b) => a % 6 == b % 6)));
+        Assert.AreEqual(true, SpanEnumerable.Range(0, 10).Contains(12, TestEqualityComparer<int>.Create((a, b) => a % 6 == b % 6)));
     }
 }

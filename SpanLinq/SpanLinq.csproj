@@ -6,10 +6,29 @@
     <LangVersion>10</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>AndanteSoft.SpanLinq</PackageId>
+    <PackageVersion>0.1.0-alpha2</PackageVersion>
+    <Authors>Andante</Authors>
+    <Description>Lightweight, Zero Allocation LINQ Implementation on `Span&lt;T&gt;`</Description>
+    <Copyright>Copyright (c) Andante 2024</Copyright>
+    <PackageProjectUrl>https://github.com/andanteyk/SpanLinq</PackageProjectUrl>
+    <PackageIcon>SpanLinq.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/andanteyk/SpanLinq</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>C# Span LINQ</PackageTags>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Benchmarkdotnet" Version="0.13.12" />
+    <None Include="$(SolutionDir)LICENSE" Pack="true" PackagePath="" />
+    <None Include="$(SolutionDir)README.md" Pack="true" PackagePath="" />
+    <None Include="$(SolutionDir)SpanLinq.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

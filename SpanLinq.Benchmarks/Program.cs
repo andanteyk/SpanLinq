@@ -7,7 +7,7 @@ using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Validators;
 
 var config = DefaultConfig.Instance
-    .AddFilter(new AnyCategoriesFilter(new string[] { "TakeLast" }))
+//    .AddFilter(new AnyCategoriesFilter(new string[] { "Join" }))
     .AddDiagnoser(MemoryDiagnoser.Default)
     .AddValidator(ExecutionValidator.FailOnError)
     .WithOrderer(new DefaultOrderer(SummaryOrderPolicy.Default, MethodOrderPolicy.Alphabetical))

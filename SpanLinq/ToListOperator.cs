@@ -1,5 +1,7 @@
 using System.Buffers;
+#if !NET8_0_OR_GREATER
 using System.Runtime.CompilerServices;
+#endif
 
 namespace SpanLinq
 {
@@ -12,7 +14,9 @@ namespace SpanLinq
 #if NET8_0_OR_GREATER
             CollectionExtensions.AddRange(list, span);
 #else
-            span.CopyTo(Unsafe.As<List<T>, ListClone<T>>(ref list)._items);
+            var cloneList = Unsafe.As<List<T>, ListClone<T>>(ref list);
+            span.CopyTo(cloneList._items);
+            cloneList._size = span.Length;
 #endif
 
             return list;
@@ -48,7 +52,9 @@ namespace SpanLinq
 #if NET8_0_OR_GREATER
             CollectionExtensions.AddRange(list, sourceSpan);
 #else
-            sourceSpan.CopyTo(Unsafe.As<List<TOut>, SpanEnumerable.ListClone<TOut>>(ref list)._items);
+            var cloneList = Unsafe.As<List<TOut>, SpanEnumerable.ListClone<TOut>>(ref list);
+            sourceSpan.CopyTo(cloneList._items);
+            cloneList._size = sourceSpan.Length;
 #endif
 
             ArrayPool<TOut>.Shared.Return(sourceArray);

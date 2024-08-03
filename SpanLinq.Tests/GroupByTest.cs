@@ -20,10 +20,10 @@ public class GroupByTest
         }
         */
 
-        foreach (var pair in expected.Zip(actual))
+        foreach (var (First, Second) in expected.Zip(actual, (First, Second) => (First, Second)))
         {
-            Assert.AreEqual(pair.First.Key, pair.Second.Key);
-            CollectionAssert.AreEqual(pair.First, pair.Second);
+            Assert.AreEqual(First.Key, Second.Key);
+            CollectionAssert.AreEqual(First, Second);
         }
     }
 }

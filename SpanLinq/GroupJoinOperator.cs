@@ -1,5 +1,3 @@
-using Perfolizer.Mathematics.SignificanceTesting;
-
 namespace SpanLinq
 {
     public static partial class SpanEnumerable

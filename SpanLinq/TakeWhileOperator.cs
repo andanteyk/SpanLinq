@@ -1,5 +1,3 @@
-using TraceReloggerLib;
-
 namespace SpanLinq
 {
     public static partial class SpanEnumerable
