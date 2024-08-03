@@ -4,7 +4,7 @@ Lightweight, Zero Allocation LINQ Implementation on `Span<T>`
 
 ## Usage
 
-It's almost the same as LINQ, but it's implemented as an extension method on `Span<T>` and can also be accessed starting from a `SpanEnumerable`.
+It's almost the same as [LINQ](https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable?view=net-9.0), but it's implemented as an extension method on `Span<T>` / `ReadOnlySpan<T>` and can also be accessed starting from a `SpanEnumerable`.
 
 ```cs
 using SpanLinq;
@@ -63,7 +63,9 @@ dotnet run -c Release --project SpanLinq.Benchmarks
 
 ## Performance
 
-// TODO.
+See [docs/BenchmarkResult.md](docs/BenchmarkResult.md).
+
+`System***` are `System.Linq.Enumerable.***`, `Span***` are `SpanLinq.SpanEnumerable.***`, and `Handcrafted***` are optimized codes that uses `Span<T>` directly. 
 
 ## Specific differences between `System.Linq.Enumerable`
 
