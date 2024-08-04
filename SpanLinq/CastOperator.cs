@@ -47,16 +47,63 @@ namespace SpanLinq
                 return default!;
             }
 
-            // TODO: safety check
             success = true;
-            if (typeof(TOut).IsAssignableFrom(typeof(TIn)))
-            {
-                return Unsafe.As<TIn, TOut>(ref current);
-            }
-            else
-            {
-                return (TOut)(object)current!;
-            }
+            return CastHelper<TIn, TOut>.Instance.Cast(current);
+        }
+    }
+
+    internal class CastHelper<TFrom, TTo>
+    {
+        public static CastHelper<TFrom, TTo> Instance { get; } =
+            typeof(TFrom).IsGenericType && typeof(TFrom).GetGenericTypeDefinition() == typeof(Nullable<>) && typeof(TTo).IsGenericType && typeof(TTo).GetGenericTypeDefinition() == typeof(Nullable<>) && typeof(TFrom).GetGenericArguments()[0] == typeof(TTo).GetGenericArguments()[0] ?
+            (CastHelper<TFrom, TTo>)Activator.CreateInstance(typeof(NullableCastHelper<>).MakeGenericType(typeof(TFrom).GetGenericArguments()[0]))! :
+            typeof(TFrom).IsGenericType && typeof(TFrom).GetGenericTypeDefinition() == typeof(Nullable<>) && typeof(TFrom).GetGenericArguments()[0] == typeof(TTo) ?
+            (CastHelper<TFrom, TTo>)Activator.CreateInstance(typeof(FromNullableCastHelper<>).MakeGenericType(typeof(TTo)))! :
+            typeof(TTo).IsGenericType && typeof(TTo).GetGenericTypeDefinition() == typeof(Nullable<>) && typeof(TTo).GetGenericArguments()[0] == typeof(TFrom) ?
+            (CastHelper<TFrom, TTo>)Activator.CreateInstance(typeof(ToNullableCastHelper<>).MakeGenericType(typeof(TFrom)))! :
+            typeof(TFrom) == typeof(TTo) && typeof(TFrom).IsValueType && !(typeof(TFrom).IsGenericType && typeof(TFrom).GetGenericTypeDefinition() == typeof(Nullable<>)) && typeof(TTo).IsValueType && !(typeof(TTo).IsGenericType && typeof(TTo).GetGenericTypeDefinition() == typeof(Nullable<>)) ?
+            (CastHelper<TFrom, TTo>)Activator.CreateInstance(typeof(StructCastHelper<>).MakeGenericType(typeof(TFrom)))! :
+            new CastHelper<TFrom, TTo>();
+
+        public virtual TTo Cast(TFrom obj)
+        {
+            return (TTo)(object)obj!;
+        }
+    }
+
+    internal class StructCastHelper<T> : CastHelper<T, T>
+        where T : struct
+    {
+        public override T Cast(T obj)
+        {
+            return obj;
+        }
+    }
+
+    internal class ToNullableCastHelper<T> : CastHelper<T, T?>
+        where T : struct
+    {
+        public override T? Cast(T obj)
+        {
+            return (T?)obj;
+        }
+    }
+
+    internal class FromNullableCastHelper<T> : CastHelper<T?, T>
+        where T : struct
+    {
+        public override T Cast(T? obj)
+        {
+            return (T)obj!;
+        }
+    }
+
+    internal class NullableCastHelper<T> : CastHelper<T?, T?>
+        where T : struct
+    {
+        public override T? Cast(T? obj)
+        {
+            return obj;
         }
     }
 }

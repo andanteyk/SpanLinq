@@ -113,6 +113,10 @@ To avoid this, materialize query using `ToArray()` or `CopyTo()` etc.
 
 Currently, it allocates 32 B per call.
 
+### `Cast()`
+
+Casting from a struct to a interface incurs an allocation by boxing, which cannot be avoided in principle.
+
 ### `Chunk()`
 
 Since it returns an array, allocation occurs.
