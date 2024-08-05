@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace SpanLinq
 {
     public static partial class SpanEnumerable
@@ -54,16 +52,32 @@ namespace SpanLinq
 
     internal class CastHelper<TFrom, TTo>
     {
-        public static CastHelper<TFrom, TTo> Instance { get; } =
-            typeof(TFrom).IsGenericType && typeof(TFrom).GetGenericTypeDefinition() == typeof(Nullable<>) && typeof(TTo).IsGenericType && typeof(TTo).GetGenericTypeDefinition() == typeof(Nullable<>) && typeof(TFrom).GetGenericArguments()[0] == typeof(TTo).GetGenericArguments()[0] ?
-            (CastHelper<TFrom, TTo>)Activator.CreateInstance(typeof(NullableCastHelper<>).MakeGenericType(typeof(TFrom).GetGenericArguments()[0]))! :
-            typeof(TFrom).IsGenericType && typeof(TFrom).GetGenericTypeDefinition() == typeof(Nullable<>) && typeof(TFrom).GetGenericArguments()[0] == typeof(TTo) ?
-            (CastHelper<TFrom, TTo>)Activator.CreateInstance(typeof(FromNullableCastHelper<>).MakeGenericType(typeof(TTo)))! :
-            typeof(TTo).IsGenericType && typeof(TTo).GetGenericTypeDefinition() == typeof(Nullable<>) && typeof(TTo).GetGenericArguments()[0] == typeof(TFrom) ?
-            (CastHelper<TFrom, TTo>)Activator.CreateInstance(typeof(ToNullableCastHelper<>).MakeGenericType(typeof(TFrom)))! :
-            typeof(TFrom) == typeof(TTo) && typeof(TFrom).IsValueType && !(typeof(TFrom).IsGenericType && typeof(TFrom).GetGenericTypeDefinition() == typeof(Nullable<>)) && typeof(TTo).IsValueType && !(typeof(TTo).IsGenericType && typeof(TTo).GetGenericTypeDefinition() == typeof(Nullable<>)) ?
-            (CastHelper<TFrom, TTo>)Activator.CreateInstance(typeof(StructCastHelper<>).MakeGenericType(typeof(TFrom)))! :
-            new CastHelper<TFrom, TTo>();
+        public static CastHelper<TFrom, TTo> Instance { get; } = CreateInstance();
+
+        internal static CastHelper<TFrom, TTo> CreateInstance()
+        {
+            bool isFromNullable = typeof(TFrom).IsGenericType && typeof(TFrom).GetGenericTypeDefinition() == typeof(Nullable<>);
+            bool isToNullable = typeof(TTo).IsGenericType && typeof(TTo).GetGenericTypeDefinition() == typeof(Nullable<>);
+
+            if (isFromNullable && isToNullable && typeof(TFrom).GetGenericArguments()[0] == typeof(TTo).GetGenericArguments()[0])
+            {
+                return (CastHelper<TFrom, TTo>)Activator.CreateInstance(typeof(NullableCastHelper<>).MakeGenericType(typeof(TFrom).GetGenericArguments()[0]))!;
+            }
+            if (isFromNullable && typeof(TFrom).GetGenericArguments()[0] == typeof(TTo))
+            {
+                return (CastHelper<TFrom, TTo>)Activator.CreateInstance(typeof(FromNullableCastHelper<>).MakeGenericType(typeof(TTo)))!;
+            }
+            if (isToNullable && typeof(TTo).GetGenericArguments()[0] == typeof(TFrom))
+            {
+                return (CastHelper<TFrom, TTo>)Activator.CreateInstance(typeof(ToNullableCastHelper<>).MakeGenericType(typeof(TFrom)))!;
+            }
+            if (typeof(TFrom) == typeof(TTo) && typeof(TFrom).IsValueType && !(isFromNullable || isToNullable))
+            {
+                return (CastHelper<TFrom, TTo>)Activator.CreateInstance(typeof(StructCastHelper<>).MakeGenericType(typeof(TFrom)))!;
+            }
+
+            return new CastHelper<TFrom, TTo>();
+        }
 
         public virtual TTo Cast(TFrom obj)
         {
