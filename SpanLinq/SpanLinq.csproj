@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>AndanteSoft.SpanLinq</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion>1.0.1</PackageVersion>
     <Authors>Andante</Authors>
     <Description>Lightweight, Zero Allocation LINQ Implementation on `Span&lt;T&gt;`</Description>
     <Copyright>Copyright (c) Andante 2024</Copyright>
