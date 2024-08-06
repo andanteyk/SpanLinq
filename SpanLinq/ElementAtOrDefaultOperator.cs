@@ -39,7 +39,7 @@ namespace SpanLinq
 
         public TOut? ElementAtOrDefault(Index index)
         {
-            if (Operator is IdentityOperator<TSource> && typeof(TOut).IsAssignableFrom(typeof(TSource)))
+            if (Operator is IdentityOperator<TSource>)
             {
                 var span = Source;
 
@@ -47,7 +47,7 @@ namespace SpanLinq
                     (!index.IsFromEnd && index.Value < span.Length))
                 {
                     var value = span[index];
-                    return Unsafe.As<TSource, TOut>(ref value);         // TODO: safety check
+                    return Unsafe.As<TSource, TOut>(ref value);         // here, TSource == TOut.
                 }
                 else
                 {
