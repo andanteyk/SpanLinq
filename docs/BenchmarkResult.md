@@ -8,153 +8,163 @@ BenchmarkDotNet v0.13.12, Windows 11 (10.0.22631.3880/23H2/2023Update/SunValley3
 
 
 ```
-| Type                          | Method                         | Mean              | Error          | StdDev        | Gen0   | Gen1   | Allocated |
-|------------------------------ |------------------------------- |------------------:|---------------:|--------------:|-------:|-------:|----------:|
-| ChunkBench                    | HandcraftedChunk               |     1,025.8733 ns |     20.3144 ns |    45.0152 ns | 0.5684 | 0.0019 |    7440 B |
-| ContainsBench                 | HandcraftedContains            |        57.0523 ns |      0.3060 ns |     0.2712 ns |      - |      - |         - |
-| RangeBench                    | HandcraftedRange               |       417.3317 ns |      7.7163 ns |     7.5785 ns | 0.3152 |      - |    4120 B |
-| ReverseBench                  | HandcraftedReverse             |       531.8064 ns |     10.1574 ns |    19.8112 ns | 0.3147 |      - |    4120 B |
-| ShuffleBench                  | HandcraftedShuffle             |     2,342.5542 ns |     10.0395 ns |     8.8997 ns |      - |      - |         - |
-| WhereBench                    | HandcraftedWhere               |       418.3963 ns |      7.7931 ns |     7.2897 ns | 0.1583 |      - |    2072 B |
-| AggregateBench                | SpanAggregate                  |       703.1531 ns |      5.0094 ns |     4.6858 ns |      - |      - |         - |
-| AggregateByBench              | SpanAggregateBy                |     7,039.1711 ns |     78.1909 ns |    73.1399 ns |      - |      - |         - |
-| AllBench                      | SpanAll                        |       623.2619 ns |      3.8695 ns |     3.6195 ns |      - |      - |         - |
-| AnyBench                      | SpanAny                        |       621.4804 ns |      2.8776 ns |     2.4029 ns |      - |      - |         - |
-| AppendBench                   | SpanAppend                     |       585.3720 ns |      4.2607 ns |     3.9855 ns |      - |      - |         - |
-| AsEnumerableBench             | SpanAsEnumerable               |     1,412.4268 ns |      4.4687 ns |     4.1800 ns | 0.0019 |      - |      32 B |
-| AverageBench                  | SpanAverage                    |       792.4938 ns |      8.3511 ns |     7.8116 ns |      - |      - |         - |
-| CastBench                     | SpanCast                       |    13,664.8865 ns |     86.3377 ns |    80.7603 ns |      - |      - |         - |
-| ChunkBench                    | SpanChunk                      |     1,485.8153 ns |     29.4941 ns |    57.5259 ns | 0.5074 |      - |    6632 B |
-| ConcatBench                   | SpanConcat                     |     7,239.0393 ns |     54.9072 ns |    51.3602 ns |      - |      - |         - |
-| ContainsBench                 | SpanContains                   |        57.4933 ns |      0.9691 ns |     0.8092 ns |      - |      - |         - |
-| CountBench                    | SpanCount                      |         1.0495 ns |      0.0080 ns |     0.0074 ns |      - |      - |         - |
-| CountBench                    | SpanCountPredicate             |       941.7050 ns |      7.1172 ns |     6.3092 ns |      - |      - |         - |
-| CountByBench                  | SpanCountBy                    |     6,714.8288 ns |     39.6717 ns |    33.1277 ns |      - |      - |         - |
-| DefaultIfEmptyBench           | SpanDefaultIfEmpty             |         2.2390 ns |      0.0511 ns |     0.0478 ns |      - |      - |         - |
-| DistinctBench                 | SpanDistinct                   |     5,590.3677 ns |     44.3969 ns |    39.3567 ns |      - |      - |         - |
-| DistinctByBench               | SpanDistinctBy                 |     3,990.4896 ns |     35.6686 ns |    33.3644 ns |      - |      - |         - |
-| ElementAtBench                | SpanElementAt                  |         6.5131 ns |      0.0247 ns |     0.0219 ns |      - |      - |         - |
-| ElementAtOrDefaultBench       | SpanElementAtOrDefault         |         6.7625 ns |      0.0311 ns |     0.0291 ns |      - |      - |         - |
-| ExceptBench                   | SpanExcept                     |    10,886.3120 ns |    214.0385 ns |   219.8018 ns |      - |      - |         - |
-| ExceptByBench                 | SpanExceptBy                   |    11,562.4712 ns |    102.2259 ns |    95.6222 ns |      - |      - |         - |
-| FirstBench                    | SpanFirst                      |       631.7733 ns |      8.6569 ns |     7.2289 ns |      - |      - |         - |
-| FirstOrDefaultBench           | SpanFirstOrDefault             |       625.4326 ns |      4.1760 ns |     3.9062 ns |      - |      - |         - |
-| ForEachBench                  | SpanForEach                    |       343.9211 ns |      2.4617 ns |     2.3027 ns |      - |      - |         - |
-| GroupByBench                  | SpanGroupBy                    |     8,400.4672 ns |     59.1141 ns |    49.3629 ns | 0.5798 |      - |    7680 B |
-| GroupJoinBench                | SpanGroupJoin                  |   407,386.1642 ns |  2,032.0575 ns | 1,801.3660 ns |      - |      - |       1 B |
-| IndexBench                    | SpanIndex                      |     1,166.8325 ns |      5.8378 ns |     5.4607 ns |      - |      - |         - |
-| IntersectBench                | SpanIntersect                  |    13,906.8128 ns |     44.0326 ns |    36.7692 ns |      - |      - |         - |
-| IntersectByBench              | SpanIntersectBy                |    14,007.1946 ns |     46.4568 ns |    41.1827 ns |      - |      - |         - |
-| JoinBench                     | SpanJoin                       |   431,884.1016 ns |  1,914.2886 ns | 1,790.6267 ns |      - |      - |       1 B |
-| LastBench                     | SpanLast                       |       671.2116 ns |      4.2811 ns |     3.7951 ns |      - |      - |         - |
-| LastOrDefaultBench            | SpanLastOrDefault              |       642.5360 ns |      4.4410 ns |     4.1541 ns |      - |      - |         - |
-| LongCountBench                | SpanLongCount                  |         1.2523 ns |      0.0042 ns |     0.0039 ns |      - |      - |         - |
-| LongCountBench                | SpanLongCountPredicate         |       941.6930 ns |      4.9561 ns |     4.6360 ns |      - |      - |         - |
-| MaxBench                      | SpanMax                        |       842.7348 ns |      7.6280 ns |     7.1352 ns |      - |      - |         - |
-| MaxByBench                    | SpanMaxBy                      |     1,058.9672 ns |      5.5676 ns |     5.2080 ns |      - |      - |         - |
-| MinBench                      | SpanMin                        |       826.2098 ns |      7.0709 ns |     6.6141 ns |      - |      - |         - |
-| MinByBench                    | SpanMinBy                      |     1,053.6475 ns |      6.0614 ns |     4.7323 ns |      - |      - |         - |
-| OfTypeBench                   | SpanOfType                     |     1,179.0877 ns |      9.2256 ns |     8.6296 ns |      - |      - |         - |
-| OrderBench                    | SpanOrder                      |    34,368.3138 ns |    216.1625 ns |   202.1986 ns |      - |      - |         - |
-| OrderByBench                  | SpanOrderBy                    |    34,185.7243 ns |    283.8743 ns |   265.5362 ns |      - |      - |         - |
-| OrderByBench                  | SpanOrderByDescending          |    36,109.2586 ns |    335.1373 ns |   313.4876 ns |      - |      - |         - |
-| OrderBench                    | SpanOrderDescending            |    35,868.7378 ns |    366.8827 ns |   306.3636 ns |      - |      - |         - |
-| PrependBench                  | SpanPrepend                    |       591.1857 ns |      3.8304 ns |     3.3956 ns |      - |      - |         - |
-| RangeBench                    | SpanRange                      |       242.5903 ns |      1.8381 ns |     1.7194 ns |      - |      - |         - |
-| RepeatBench                   | SpanRepeat                     |       284.6227 ns |      1.8423 ns |     1.7233 ns |      - |      - |         - |
-| ReverseBench                  | SpanReverse                    |     1,730.8057 ns |      9.9866 ns |     9.3415 ns |      - |      - |         - |
-| SelectBench                   | SpanSelect                     |       707.1288 ns |      2.9962 ns |     2.8027 ns |      - |      - |         - |
-| SelectManyBench               | SpanSelectMany                 | 4,120,231.8917 ns |  9,787.7124 ns | 8,676.5521 ns |      - |      - |       3 B |
-| SequenceEqualBench            | SpanSequenceEqual              |         2.1860 ns |      0.0172 ns |     0.0161 ns |      - |      - |         - |
-| SequenceEqualBench            | SpanSequenceEqualSequence      |       631.8163 ns |      5.2091 ns |     4.8726 ns |      - |      - |         - |
-| ShuffleBench                  | SpanShuffle                    |     5,400.5957 ns |     39.5579 ns |    37.0025 ns |      - |      - |         - |
-| SingleBench                   | SpanSingle                     |       632.5001 ns |      4.1461 ns |     3.8783 ns |      - |      - |         - |
-| SingleOrDefaultBench          | SpanSingleOrDefault            |       620.5624 ns |      3.9251 ns |     3.4795 ns |      - |      - |         - |
-| SkipBench                     | SpanSkip                       |         4.6888 ns |      0.0323 ns |     0.0303 ns |      - |      - |         - |
-| SkipLastBench                 | SpanSkipLast                   |         4.7297 ns |      0.0732 ns |     0.0685 ns |      - |      - |         - |
-| SkipWhileBench                | SpanSkipWhile                  |     1,286.5033 ns |     10.4907 ns |     9.8130 ns |      - |      - |         - |
-| SumBench                      | SpanSum                        |       701.6002 ns |      3.3023 ns |     3.0889 ns |      - |      - |         - |
-| TakeBench                     | SpanTake                       |       580.5119 ns |      1.5037 ns |     1.3330 ns |      - |      - |         - |
-| TakeLastBench                 | SpanTakeLast                   |     1,296.4867 ns |      5.9846 ns |     5.3052 ns |      - |      - |         - |
-| TakeWhileBench                | SpanTakeWhile                  |     2,318.1701 ns |     11.9447 ns |    10.5887 ns |      - |      - |         - |
-| ThenByBench                   | SpanThenBy                     |    56,444.8691 ns |    153.8347 ns |   136.3704 ns |      - |      - |         - |
-| ThenByBench                   | SpanThenByDescending           |    56,471.0844 ns |    281.0412 ns |   262.8861 ns |      - |      - |         - |
-| ToDictionaryBench             | SpanToDictionary               |     4,541.3356 ns |     71.1674 ns |    66.5700 ns | 1.6937 | 0.1297 |   22192 B |
-| ToHashSetBench                | SpanToHashSet                  |     4,055.0258 ns |     71.1628 ns |    69.8914 ns | 1.3580 | 0.0839 |   17768 B |
-| ToListBench                   | SpanToList                     |       179.4493 ns |      3.6140 ns |     7.8566 ns | 0.3176 | 0.0048 |    4152 B |
-| ToLookupBench                 | SpanToLookup                   |    24,572.7907 ns |    396.6613 ns |   371.0372 ns | 9.3994 | 2.3499 |  123056 B |
-| TryGetNonEnumeratedCountBench | SpanTryGetNonEnumeratedCount   |         0.1267 ns |      0.0044 ns |     0.0041 ns |      - |      - |         - |
-| UnionBench                    | SpanUnion                      |    14,385.2830 ns |     26.2765 ns |    20.5149 ns |      - |      - |         - |
-| UnionByBench                  | SpanUnionBy                    |    16,276.4999 ns |    198.2176 ns |   175.7148 ns |      - |      - |         - |
-| WhereBench                    | SpanWhere                      |     1,026.2970 ns |      8.0581 ns |     7.5375 ns |      - |      - |         - |
-| ZipBench                      | SpanZip                        |     6,979.3469 ns |     23.1941 ns |    21.6958 ns |      - |      - |         - |
-| AggregateBench                | SystemAggregate                |       701.8700 ns |     13.5480 ns |    16.1279 ns | 0.0019 |      - |      32 B |
-| AggregateByBench              | SystemAggregateBy              |     3,483.4472 ns |     18.6170 ns |    16.5035 ns | 0.0267 |      - |     368 B |
-| AllBench                      | SystemAll                      |       560.0166 ns |      2.1881 ns |     1.9397 ns | 0.0019 |      - |      32 B |
-| AnyBench                      | SystemAny                      |       589.3681 ns |      6.4772 ns |     6.0588 ns | 0.0019 |      - |      32 B |
-| AppendBench                   | SystemAppend                   |     1,633.3231 ns |     31.4620 ns |    30.8999 ns | 0.0057 |      - |      88 B |
-| AsEnumerableBench             | SystemAsEnumerable             |       562.1725 ns |      3.1665 ns |     2.9619 ns | 0.0019 |      - |      32 B |
-| AverageBench                  | SystemAverage                  |        91.8306 ns |      1.7956 ns |     1.4019 ns |      - |      - |         - |
-| CastBench                     | SystemCast                     |    29,212.4442 ns |    144.3611 ns |   127.9724 ns | 1.8616 |      - |   24656 B |
-| ChunkBench                    | SystemChunk                    |     1,050.8867 ns |     21.0018 ns |    47.4045 ns | 0.5074 |      - |    6632 B |
-| ConcatBench                   | SystemConcat                   |     3,548.8239 ns |     58.4093 ns |    54.6361 ns | 0.0076 |      - |     120 B |
-| ContainsBench                 | SystemContains                 |        59.9012 ns |      0.8079 ns |     0.6746 ns |      - |      - |         - |
-| CountBench                    | SystemCount                    |         1.9449 ns |      0.0121 ns |     0.0113 ns |      - |      - |         - |
-| CountBench                    | SystemCountPredicate           |       875.1317 ns |     11.3271 ns |    10.5953 ns | 0.0019 |      - |      32 B |
-| CountByBench                  | SystemCountBy                  |     3,410.3470 ns |     38.3934 ns |    34.0347 ns | 0.0229 |      - |     344 B |
-| DefaultIfEmptyBench           | SystemDefaultIfEmpty           |        12.3344 ns |      0.2382 ns |     0.2340 ns | 0.0037 |      - |      48 B |
-| DistinctBench                 | SystemDistinct                 |    10,566.5647 ns |    158.8862 ns |   132.6772 ns | 4.4708 | 0.7324 |   58656 B |
-| DistinctByBench               | SystemDistinctBy               |     4,091.9453 ns |     57.9900 ns |    51.4066 ns | 0.0229 |      - |     360 B |
-| ElementAtBench                | SystemElementAt                |         8.8404 ns |      0.0743 ns |     0.0695 ns |      - |      - |         - |
-| ElementAtOrDefaultBench       | SystemElementAtOrDefault       |        10.2277 ns |      0.1074 ns |     0.1005 ns |      - |      - |         - |
-| ExceptBench                   | SystemExcept                   |     8,278.2029 ns |    116.4023 ns |   103.1876 ns | 1.3580 | 0.0763 |   17928 B |
-| ExceptByBench                 | SystemExceptBy                 |     8,567.3891 ns |     94.7324 ns |    83.9778 ns | 1.3580 | 0.0763 |   17944 B |
-| FirstBench                    | SystemFirst                    |       610.7371 ns |     11.0883 ns |    10.3720 ns | 0.0019 |      - |      32 B |
-| FirstOrDefaultBench           | SystemFirstOrDefault           |       605.9664 ns |      6.9283 ns |     6.4808 ns | 0.0019 |      - |      32 B |
-| GroupByBench                  | SystemGroupBy                  |     7,030.2276 ns |     92.1324 ns |    76.9348 ns | 2.1820 | 0.1221 |   28536 B |
-| GroupJoinBench                | SystemGroupJoin                |    23,809.1370 ns |    408.3943 ns |   362.0309 ns | 9.3994 | 2.6550 |  123216 B |
-| IndexBench                    | SystemIndex                    |     5,877.5114 ns |     17.3441 ns |    14.4831 ns |      - |      - |      96 B |
-| IntersectBench                | SystemIntersect                |     9,521.2881 ns |     71.2410 ns |    66.6389 ns | 1.3580 | 0.0763 |   17928 B |
-| IntersectByBench              | SystemIntersectBy              |     9,727.2948 ns |    134.0769 ns |   125.4156 ns | 1.3580 | 0.0763 |   17944 B |
-| JoinBench                     | SystemJoin                     |    25,111.6767 ns |    413.1446 ns |   366.2419 ns | 9.4299 | 2.3499 |  123232 B |
-| LastBench                     | SystemLast                     |     1,867.6312 ns |      5.0642 ns |     4.2288 ns |      - |      - |         - |
-| LastOrDefaultBench            | SystemLastOrDefault            |     1,864.4722 ns |      5.9919 ns |     5.6048 ns |      - |      - |         - |
-| LongCountBench                | SystemLongCount                |       292.6889 ns |      3.7504 ns |     3.5081 ns | 0.0024 |      - |      32 B |
-| LongCountBench                | SystemLongCountPredicate       |       866.1913 ns |      4.4559 ns |     4.1681 ns | 0.0019 |      - |      32 B |
-| MaxBench                      | SystemMax                      |        36.3290 ns |      0.7014 ns |     0.6889 ns |      - |      - |         - |
-| MaxByBench                    | SystemMaxBy                    |       644.4816 ns |      5.6257 ns |     5.2623 ns | 0.0019 |      - |      32 B |
-| MinBench                      | SystemMin                      |        36.2777 ns |      0.3507 ns |     0.3109 ns |      - |      - |         - |
-| MinByBench                    | SystemMinBy                    |       598.3087 ns |      6.7526 ns |     6.3164 ns | 0.0019 |      - |      32 B |
-| OfTypeBench                   | SystemOfType                   |       558.1400 ns |      2.1725 ns |     2.0322 ns | 0.0019 |      - |      32 B |
-| OrderBench                    | SystemOrder                    |     3,908.1107 ns |     72.2211 ns |    70.9308 ns | 0.3128 |      - |    4176 B |
-| OrderByBench                  | SystemOrderBy                  |     9,728.4551 ns |     45.0695 ns |    42.1581 ns | 0.9613 | 0.0153 |   12568 B |
-| OrderByBench                  | SystemOrderByDescending        |    14,792.8101 ns |    143.5580 ns |   134.2843 ns | 0.9613 | 0.0153 |   12568 B |
-| OrderBench                    | SystemOrderDescending          |     9,623.9661 ns |     46.5531 ns |    43.5458 ns | 0.3052 |      - |    4176 B |
-| PrependBench                  | SystemPrepend                  |     1,633.7946 ns |     20.4386 ns |    19.1183 ns | 0.0057 |      - |      88 B |
-| RangeBench                    | SystemRange                    |       469.3439 ns |      2.7540 ns |     2.5761 ns | 0.0029 |      - |      40 B |
-| RepeatBench                   | SystemRepeat                   |       473.6578 ns |      1.4942 ns |     1.2477 ns | 0.0024 |      - |      32 B |
-| ReverseBench                  | SystemReverse                  |       994.0624 ns |     10.2884 ns |     9.6238 ns | 0.3185 |      - |    4168 B |
-| SelectBench                   | SystemSelect                   |       668.0574 ns |      2.4513 ns |     2.1730 ns | 0.0029 |      - |      48 B |
-| SelectManyBench               | SystemSelectMany               | 1,499,215.6110 ns | 10,031.6551 ns | 8,892.8010 ns | 1.9531 |      - |   41057 B |
-| SequenceEqualBench            | SystemSequenceEqual            |         1.9193 ns |      0.0110 ns |     0.0086 ns |      - |      - |         - |
-| SequenceEqualBench            | SystemSequenceEqualSequence    |       554.8530 ns |      3.9535 ns |     3.6981 ns | 0.0057 |      - |      80 B |
-| SingleBench                   | SystemSingle                   |       640.9832 ns |      7.5215 ns |     7.0356 ns | 0.0019 |      - |      32 B |
-| SingleOrDefaultBench          | SystemSingleOrDefault          |       613.3660 ns |      8.3022 ns |     7.7659 ns | 0.0019 |      - |      32 B |
-| SkipBench                     | SystemSkip                     |        18.2896 ns |      0.3369 ns |     0.3151 ns | 0.0037 |      - |      48 B |
-| SkipLastBench                 | SystemSkipLast                 |        36.9188 ns |      0.4948 ns |     0.4629 ns | 0.0104 |      - |     136 B |
-| SkipWhileBench                | SystemSkipWhile                |     1,052.2506 ns |      8.5918 ns |     8.0368 ns | 0.0076 |      - |     104 B |
-| SumBench                      | SystemSum                      |        74.5351 ns |      0.2649 ns |     0.2212 ns |      - |      - |         - |
-| TakeBench                     | SystemTake                     |     3,930.2133 ns |     14.8998 ns |    13.9373 ns |      - |      - |      48 B |
-| TakeLastBench                 | SystemTakeLast                 |     6,265.3723 ns |     23.7613 ns |    22.2264 ns | 0.0076 |      - |     136 B |
-| TakeWhileBench                | SystemTakeWhile                |     2,546.2089 ns |     18.7128 ns |    17.5040 ns | 0.0076 |      - |     104 B |
-| ThenByBench                   | SystemThenBy                   |    18,688.0809 ns |    119.7349 ns |   112.0001 ns | 1.5869 | 0.0916 |   20928 B |
-| ThenByBench                   | SystemThenByDescending         |    18,688.2876 ns |    130.0922 ns |   115.3233 ns | 1.5869 | 0.0916 |   20928 B |
-| ToDictionaryBench             | SystemToDictionary             |     4,367.0843 ns |     75.9974 ns |    67.3697 ns | 1.6937 | 0.1297 |   22192 B |
-| ToHashSetBench                | SystemToHashSet                |     4,777.7808 ns |     93.5584 ns |   128.0637 ns | 1.3580 | 0.0839 |   17800 B |
-| ToListBench                   | SystemToList                   |       180.9148 ns |      3.6393 ns |     7.7555 ns | 0.3176 | 0.0048 |    4152 B |
-| ToLookupBench                 | SystemToLookup                 |    19,771.0583 ns |    336.3901 ns |   552.6985 ns | 9.3994 | 2.3499 |  123040 B |
-| TryGetNonEnumeratedCountBench | SystemTryGetNonEnumeratedCount |         3.0712 ns |      0.0103 ns |     0.0096 ns |      - |      - |         - |
-| UnionBench                    | SystemUnion                    |    13,690.1597 ns |    134.3573 ns |   119.1042 ns | 4.4708 | 0.7324 |   58696 B |
-| UnionByBench                  | SystemUnionBy                  |    14,831.5377 ns |    104.8527 ns |    98.0793 ns | 4.4708 | 0.7324 |   58736 B |
-| WhereBench                    | SystemWhere                    |       939.1045 ns |      4.9587 ns |     4.1408 ns | 0.0029 |      - |      48 B |
-| ZipBench                      | SystemZip                      |     6,015.0437 ns |     19.6605 ns |    17.4285 ns | 0.0076 |      - |     144 B |
+| Type                          | Method                         | Mean              | Error          | StdDev         | Gen0   | Gen1   | Allocated |
+|------------------------------ |------------------------------- |------------------:|---------------:|---------------:|-------:|-------:|----------:|
+| ChunkBench                    | HandcraftedChunk               |       986.5243 ns |     15.5550 ns |     15.2770 ns | 0.5684 | 0.0019 |    7440 B |
+| ContainsBench                 | HandcraftedContains            |        56.5976 ns |      0.8941 ns |      0.7926 ns |      - |      - |         - |
+| RangeBench                    | HandcraftedRange               |       387.3552 ns |      5.8060 ns |      5.4310 ns | 0.3152 |      - |    4120 B |
+| ReverseBench                  | HandcraftedReverse             |       522.8223 ns |     10.4429 ns |     17.7328 ns | 0.3147 |      - |    4120 B |
+| ShuffleBench                  | HandcraftedShuffle             |     2,311.1016 ns |     18.1437 ns |     16.9716 ns |      - |      - |         - |
+| WhereBench                    | HandcraftedWhere               |       399.2979 ns |      6.2727 ns |      5.8674 ns | 0.1583 |      - |    2072 B |
+| AggregateBench                | SpanAggregate                  |       699.9725 ns |      4.8966 ns |      4.5802 ns |      - |      - |         - |
+| AggregateByBench              | SpanAggregateBy                |     6,949.9902 ns |     42.9620 ns |     40.1867 ns |      - |      - |         - |
+| AllBench                      | SpanAll                        |       613.9293 ns |      4.9212 ns |      4.6033 ns |      - |      - |         - |
+| AnyBench                      | SpanAny                        |       614.8451 ns |      4.0036 ns |      3.7450 ns |      - |      - |         - |
+| AppendBench                   | SpanAppend                     |       579.9351 ns |      2.6914 ns |      2.5175 ns |      - |      - |         - |
+| AsEnumerableBench             | SpanAsEnumerable               |     1,547.8661 ns |     16.9491 ns |     15.8542 ns | 0.0019 |      - |      32 B |
+| AverageBench                  | SpanAverage                    |       781.6399 ns |      4.3406 ns |      3.6246 ns |      - |      - |         - |
+| CastBench                     | SpanCastClass                  |     1,617.6309 ns |     11.6509 ns |     10.3282 ns |      - |      - |         - |
+| CastBench                     | SpanCastIntToNullableInt       |     1,172.4753 ns |      8.3516 ns |      7.8121 ns |      - |      - |         - |
+| CastBench                     | SpanCastIntToObject            |     3,685.6677 ns |     64.3408 ns |     53.7275 ns | 1.8768 |      - |   24576 B |
+| ChunkBench                    | SpanChunk                      |     1,384.7554 ns |     23.3000 ns |     20.6548 ns | 0.5074 |      - |    6632 B |
+| ConcatBench                   | SpanConcat                     |     7,156.9479 ns |     55.5181 ns |     51.9317 ns |      - |      - |         - |
+| ContainsBench                 | SpanContains                   |        56.9308 ns |      0.3818 ns |      0.3188 ns |      - |      - |         - |
+| CountBench                    | SpanCount                      |         1.0479 ns |      0.0084 ns |      0.0078 ns |      - |      - |         - |
+| CountBench                    | SpanCountPredicate             |       939.3974 ns |      9.0973 ns |      8.5096 ns |      - |      - |         - |
+| CountByBench                  | SpanCountBy                    |     6,753.1801 ns |     80.0971 ns |     71.0040 ns |      - |      - |         - |
+| DefaultIfEmptyBench           | SpanDefaultIfEmpty             |         2.5316 ns |      0.0758 ns |      0.1423 ns |      - |      - |         - |
+| DistinctBench                 | SpanDistinct                   |     5,361.6230 ns |     48.2835 ns |     45.1645 ns |      - |      - |         - |
+| DistinctByBench               | SpanDistinctBy                 |     3,968.5797 ns |     32.9306 ns |     29.1921 ns |      - |      - |         - |
+| ElementAtBench                | SpanElementAt                  |         6.5507 ns |      0.0501 ns |      0.0468 ns |      - |      - |         - |
+| ElementAtOrDefaultBench       | SpanElementAtOrDefault         |         6.5041 ns |      0.0543 ns |      0.0508 ns |      - |      - |         - |
+| ExceptBench                   | SpanExcept                     |    10,634.8728 ns |     73.6055 ns |     68.8506 ns |      - |      - |         - |
+| ExceptByBench                 | SpanExceptBy                   |    11,505.7641 ns |    131.7169 ns |    123.2081 ns |      - |      - |         - |
+| FirstBench                    | SpanFirst                      |       638.8438 ns |      7.6003 ns |      7.1093 ns |      - |      - |         - |
+| FirstOrDefaultBench           | SpanFirstOrDefault             |       625.2525 ns |      4.2528 ns |      3.7700 ns |      - |      - |         - |
+| ForEachBench                  | SpanForEach                    |       344.8276 ns |      2.5698 ns |      2.4038 ns |      - |      - |         - |
+| GroupByBench                  | SpanGroupBy                    |     8,198.6877 ns |     58.1351 ns |     48.5455 ns | 0.5798 |      - |    7680 B |
+| GroupJoinBench                | SpanGroupJoin                  |   428,989.0202 ns |  3,249.5174 ns |  3,039.6006 ns |      - |      - |       1 B |
+| IndexBench                    | SpanIndex                      |     1,164.9994 ns |      9.8407 ns |      8.7236 ns |      - |      - |         - |
+| IntersectBench                | SpanIntersect                  |    14,047.3296 ns |    112.5371 ns |    105.2673 ns |      - |      - |         - |
+| IntersectByBench              | SpanIntersectBy                |    14,166.2002 ns |    112.4214 ns |    105.1590 ns |      - |      - |         - |
+| JoinBench                     | SpanJoin                       |   414,373.3008 ns |  2,513.6207 ns |  2,351.2424 ns |      - |      - |       1 B |
+| LastBench                     | SpanLast                       |       671.2693 ns |      5.7405 ns |      5.3697 ns |      - |      - |         - |
+| LastOrDefaultBench            | SpanLastOrDefault              |       645.2881 ns |      4.7217 ns |      4.4167 ns |      - |      - |         - |
+| LongCountBench                | SpanLongCount                  |         1.2512 ns |      0.0135 ns |      0.0126 ns |      - |      - |         - |
+| LongCountBench                | SpanLongCountPredicate         |       941.5909 ns |      7.0302 ns |      6.5760 ns |      - |      - |         - |
+| MaxBench                      | SpanMax                        |       846.6641 ns |     15.7914 ns |     14.7713 ns |      - |      - |         - |
+| MaxByBench                    | SpanMaxBy                      |     1,049.5046 ns |      7.6778 ns |      6.8061 ns |      - |      - |         - |
+| MinBench                      | SpanMin                        |       814.8437 ns |      6.5566 ns |      6.1330 ns |      - |      - |         - |
+| MinByBench                    | SpanMinBy                      |     1,047.9569 ns |      8.1287 ns |      7.6036 ns |      - |      - |         - |
+| OfTypeBench                   | SpanOfTypeClass                |     1,823.1427 ns |     11.0783 ns |     10.3626 ns |      - |      - |         - |
+| OfTypeBench                   | SpanOfTypeIntToNullableInt     |     1,173.4731 ns |     14.0145 ns |     13.1092 ns |      - |      - |         - |
+| OfTypeBench                   | SpanOfTypeIntToObject          |     3,966.8917 ns |     79.2714 ns |     81.4059 ns | 1.8768 |      - |   24576 B |
+| OrderBench                    | SpanOrder                      |    34,639.1455 ns |    444.1361 ns |    415.4452 ns |      - |      - |         - |
+| OrderByBench                  | SpanOrderBy                    |    33,165.3229 ns |    278.5131 ns |    246.8946 ns |      - |      - |         - |
+| OrderByBench                  | SpanOrderByDescending          |    35,560.9155 ns |    388.4832 ns |    363.3875 ns |      - |      - |         - |
+| OrderBench                    | SpanOrderDescending            |    35,801.8372 ns |    500.8818 ns |    468.5252 ns |      - |      - |         - |
+| PrependBench                  | SpanPrepend                    |       585.2983 ns |      4.1572 ns |      3.8886 ns |      - |      - |         - |
+| RangeBench                    | SpanRange                      |       280.6029 ns |      2.2890 ns |      2.1412 ns |      - |      - |         - |
+| RepeatBench                   | SpanRepeat                     |       239.7012 ns |      2.3441 ns |      2.1927 ns |      - |      - |         - |
+| ReverseBench                  | SpanReverse                    |     1,722.1767 ns |     11.1855 ns |     10.4629 ns |      - |      - |         - |
+| SelectBench                   | SpanSelect                     |       701.1561 ns |      3.9226 ns |      3.6692 ns |      - |      - |         - |
+| SelectManyBench               | SpanSelectMany                 | 3,786,232.4219 ns | 23,804.4766 ns | 21,102.0485 ns |      - |      - |       2 B |
+| SequenceEqualBench            | SpanSequenceEqual              |         2.1705 ns |      0.0168 ns |      0.0157 ns |      - |      - |         - |
+| SequenceEqualBench            | SpanSequenceEqualSequence      |       585.6679 ns |      4.5469 ns |      4.2532 ns |      - |      - |         - |
+| ShuffleBench                  | SpanShuffle                    |     5,408.0329 ns |     67.0890 ns |     62.7551 ns |      - |      - |         - |
+| SingleBench                   | SpanSingle                     |       622.9921 ns |      5.7304 ns |      5.3603 ns |      - |      - |         - |
+| SingleOrDefaultBench          | SpanSingleOrDefault            |       622.9509 ns |      2.8049 ns |      2.4865 ns |      - |      - |         - |
+| SkipBench                     | SpanSkip                       |         5.0549 ns |      0.0416 ns |      0.0389 ns |      - |      - |         - |
+| SkipLastBench                 | SpanSkipLast                   |         4.4670 ns |      0.0331 ns |      0.0310 ns |      - |      - |         - |
+| SkipWhileBench                | SpanSkipWhile                  |     1,276.2734 ns |     13.7680 ns |     12.2050 ns |      - |      - |         - |
+| SumBench                      | SpanSum                        |       695.4087 ns |      5.4876 ns |      4.8646 ns |      - |      - |         - |
+| TakeBench                     | SpanTake                       |       575.9687 ns |      5.6646 ns |      5.2987 ns |      - |      - |         - |
+| TakeLastBench                 | SpanTakeLast                   |     1,285.5743 ns |      8.4032 ns |      7.0170 ns |      - |      - |         - |
+| TakeWhileBench                | SpanTakeWhile                  |     2,301.9845 ns |     12.0380 ns |     11.2603 ns |      - |      - |         - |
+| ThenByBench                   | SpanThenBy                     |    55,888.7107 ns |    565.0072 ns |    500.8642 ns |      - |      - |         - |
+| ThenByBench                   | SpanThenByDescending           |    57,577.2957 ns |    470.9633 ns |    440.5393 ns |      - |      - |         - |
+| ToArrayBench                  | SpanToArray                    |       645.4271 ns |      7.5430 ns |      6.6867 ns | 0.3147 |      - |    4120 B |
+| ToDictionaryBench             | SpanToDictionary               |     4,367.7570 ns |     85.2039 ns |     79.6997 ns | 1.6937 | 0.1297 |   22192 B |
+| ToHashSetBench                | SpanToHashSet                  |     3,816.6974 ns |     70.8218 ns |     89.5670 ns | 1.3580 | 0.0839 |   17768 B |
+| ToListBench                   | SpanToList                     |       168.8875 ns |      3.3910 ns |      3.4823 ns | 0.3176 | 0.0048 |    4152 B |
+| ToLookupBench                 | SpanToLookup                   |    23,782.2921 ns |    301.5729 ns |    282.0915 ns | 9.3994 | 2.3499 |  123056 B |
+| TryGetNonEnumeratedCountBench | SpanTryGetNonEnumeratedCount   |         0.1155 ns |      0.0073 ns |      0.0068 ns |      - |      - |         - |
+| UnionBench                    | SpanUnion                      |    14,359.6325 ns |    138.8879 ns |    129.9158 ns |      - |      - |         - |
+| UnionByBench                  | SpanUnionBy                    |    16,102.5240 ns |    223.6342 ns |    209.1875 ns |      - |      - |         - |
+| WhereBench                    | SpanWhere                      |     1,012.4576 ns |      7.0452 ns |      5.8831 ns |      - |      - |         - |
+| ZipBench                      | SpanZip                        |     6,700.5346 ns |     26.4357 ns |     24.7280 ns |      - |      - |         - |
+| AggregateBench                | SystemAggregate                |       679.6662 ns |      8.0317 ns |      7.5129 ns | 0.0019 |      - |      32 B |
+| AggregateByBench              | SystemAggregateBy              |     3,455.6540 ns |     30.6001 ns |     28.6233 ns | 0.0267 |      - |     368 B |
+| AllBench                      | SystemAll                      |       554.9420 ns |      4.1498 ns |      3.6787 ns | 0.0019 |      - |      32 B |
+| AnyBench                      | SystemAny                      |       583.8789 ns |     11.1741 ns |     10.4523 ns | 0.0019 |      - |      32 B |
+| AppendBench                   | SystemAppend                   |     1,552.1068 ns |     30.7831 ns |     49.7090 ns | 0.0057 |      - |      88 B |
+| AsEnumerableBench             | SystemAsEnumerable             |       554.7127 ns |      4.8911 ns |      4.5751 ns | 0.0019 |      - |      32 B |
+| AverageBench                  | SystemAverage                  |        90.8496 ns |      1.7859 ns |      2.6177 ns |      - |      - |         - |
+| CastBench                     | SystemCastClass                |     3,107.5920 ns |     40.6270 ns |     38.0026 ns |      - |      - |      32 B |
+| CastBench                     | SystemCastIntToNullableInt     |    29,388.5033 ns |    233.7918 ns |    195.2268 ns | 1.8616 |      - |   24656 B |
+| CastBench                     | SystemCastIntToObject          |    23,789.3106 ns |    213.1768 ns |    188.9757 ns | 1.8616 |      - |   24656 B |
+| ChunkBench                    | SystemChunk                    |       961.6432 ns |     14.3118 ns |     12.6870 ns | 0.5074 |      - |    6632 B |
+| ConcatBench                   | SystemConcat                   |     3,763.3965 ns |     46.3459 ns |     41.0844 ns | 0.0076 |      - |     120 B |
+| ContainsBench                 | SystemContains                 |        59.1865 ns |      0.4965 ns |      0.4146 ns |      - |      - |         - |
+| CountBench                    | SystemCount                    |         1.9249 ns |      0.0081 ns |      0.0068 ns |      - |      - |         - |
+| CountBench                    | SystemCountPredicate           |       868.2571 ns |      5.6509 ns |      5.2858 ns | 0.0019 |      - |      32 B |
+| CountByBench                  | SystemCountBy                  |     3,387.4643 ns |     24.1797 ns |     22.6177 ns | 0.0229 |      - |     344 B |
+| DefaultIfEmptyBench           | SystemDefaultIfEmpty           |        11.9180 ns |      0.1201 ns |      0.1124 ns | 0.0037 |      - |      48 B |
+| DistinctBench                 | SystemDistinct                 |    10,127.4966 ns |    200.7095 ns |    223.0881 ns | 4.4708 | 0.7324 |   58656 B |
+| DistinctByBench               | SystemDistinctBy               |     4,083.9037 ns |     81.4679 ns |     83.6615 ns | 0.0229 |      - |     360 B |
+| ElementAtBench                | SystemElementAt                |         9.3155 ns |      0.1000 ns |      0.0887 ns |      - |      - |         - |
+| ElementAtOrDefaultBench       | SystemElementAtOrDefault       |        10.1430 ns |      0.0693 ns |      0.0614 ns |      - |      - |         - |
+| ExceptBench                   | SystemExcept                   |     8,199.0748 ns |     81.3676 ns |     76.1113 ns | 1.3580 | 0.0763 |   17928 B |
+| ExceptByBench                 | SystemExceptBy                 |     8,640.9007 ns |    159.3129 ns |    156.4665 ns | 1.3580 | 0.0763 |   17944 B |
+| FirstBench                    | SystemFirst                    |       614.2405 ns |     12.1156 ns |     16.1739 ns | 0.0019 |      - |      32 B |
+| FirstOrDefaultBench           | SystemFirstOrDefault           |       561.8169 ns |      2.9591 ns |      2.7679 ns | 0.0019 |      - |      32 B |
+| GroupByBench                  | SystemGroupBy                  |     6,950.4102 ns |     64.4758 ns |     60.3107 ns | 2.1820 | 0.1221 |   28536 B |
+| GroupJoinBench                | SystemGroupJoin                |    23,792.0848 ns |    398.9194 ns |    353.6317 ns | 9.3994 | 2.6550 |  123216 B |
+| IndexBench                    | SystemIndex                    |     5,894.1272 ns |     25.4573 ns |     23.8127 ns |      - |      - |      96 B |
+| IntersectBench                | SystemIntersect                |     9,521.9116 ns |    123.3897 ns |    115.4188 ns | 1.3580 | 0.0763 |   17928 B |
+| IntersectByBench              | SystemIntersectBy              |     9,723.0809 ns |    142.2311 ns |    133.0431 ns | 1.3580 | 0.0763 |   17944 B |
+| JoinBench                     | SystemJoin                     |    25,081.2330 ns |    263.8295 ns |    233.8780 ns | 9.4299 | 2.3499 |  123232 B |
+| LastBench                     | SystemLast                     |     1,848.1264 ns |      8.0079 ns |      7.4906 ns |      - |      - |         - |
+| LastOrDefaultBench            | SystemLastOrDefault            |     1,856.7330 ns |      2.0463 ns |      1.8140 ns |      - |      - |         - |
+| LongCountBench                | SystemLongCount                |       291.7269 ns |      4.0987 ns |      3.8339 ns | 0.0024 |      - |      32 B |
+| LongCountBench                | SystemLongCountPredicate       |       868.4924 ns |      6.6687 ns |      6.2379 ns | 0.0019 |      - |      32 B |
+| MaxBench                      | SystemMax                      |        36.2078 ns |      0.6191 ns |      0.5791 ns |      - |      - |         - |
+| MaxByBench                    | SystemMaxBy                    |       637.4495 ns |      6.0458 ns |      5.3594 ns | 0.0019 |      - |      32 B |
+| MinBench                      | SystemMin                      |        36.0806 ns |      0.3305 ns |      0.2930 ns |      - |      - |         - |
+| MinByBench                    | SystemMinBy                    |       594.7256 ns |      3.5955 ns |      3.3632 ns | 0.0019 |      - |      32 B |
+| OfTypeBench                   | SystemOfTypeClass              |     5,332.9217 ns |     56.3115 ns |     49.9186 ns |      - |      - |      80 B |
+| OfTypeBench                   | SystemOfTypeIntToNullableInt   |    28,260.5078 ns |    406.9000 ns |    380.6145 ns | 1.8616 |      - |   24656 B |
+| OfTypeBench                   | SystemOfTypeIntToObject        |    24,565.1893 ns |    130.9275 ns |    116.0638 ns | 1.8616 |      - |   24656 B |
+| OrderBench                    | SystemOrder                    |     3,674.4110 ns |     70.0256 ns |     68.7745 ns | 0.3166 |      - |    4176 B |
+| OrderByBench                  | SystemOrderBy                  |     9,631.3508 ns |    102.1563 ns |     90.5589 ns | 0.9613 | 0.0153 |   12568 B |
+| OrderByBench                  | SystemOrderByDescending        |    14,631.4315 ns |    114.3443 ns |    106.9577 ns | 0.9613 | 0.0153 |   12568 B |
+| OrderBench                    | SystemOrderDescending          |     9,708.2527 ns |     67.5129 ns |     63.1516 ns | 0.3052 |      - |    4176 B |
+| PrependBench                  | SystemPrepend                  |     1,489.6824 ns |     22.0070 ns |     21.6138 ns | 0.0057 |      - |      88 B |
+| RangeBench                    | SystemRange                    |       464.1210 ns |      3.6208 ns |      3.2097 ns | 0.0029 |      - |      40 B |
+| RepeatBench                   | SystemRepeat                   |       470.6885 ns |      2.7867 ns |      2.6066 ns | 0.0024 |      - |      32 B |
+| ReverseBench                  | SystemReverse                  |     1,011.1956 ns |     20.1423 ns |     37.3351 ns | 0.3185 |      - |    4168 B |
+| SelectBench                   | SystemSelect                   |       663.8566 ns |      3.8969 ns |      3.4545 ns | 0.0029 |      - |      48 B |
+| SelectManyBench               | SystemSelectMany               | 1,636,864.6354 ns | 29,829.2695 ns | 27,902.3172 ns | 1.9531 |      - |   41057 B |
+| SequenceEqualBench            | SystemSequenceEqual            |         1.8489 ns |      0.0273 ns |      0.0255 ns |      - |      - |         - |
+| SequenceEqualBench            | SystemSequenceEqualSequence    |       549.0433 ns |      6.0798 ns |      5.3896 ns | 0.0057 |      - |      80 B |
+| SingleBench                   | SystemSingle                   |       616.7725 ns |     11.2903 ns |     10.0085 ns | 0.0019 |      - |      32 B |
+| SingleOrDefaultBench          | SystemSingleOrDefault          |       608.9364 ns |     10.2468 ns |      8.5565 ns | 0.0019 |      - |      32 B |
+| SkipBench                     | SystemSkip                     |        17.4140 ns |      0.2070 ns |      0.1835 ns | 0.0037 |      - |      48 B |
+| SkipLastBench                 | SystemSkipLast                 |        36.4592 ns |      0.3278 ns |      0.3066 ns | 0.0104 |      - |     136 B |
+| SkipWhileBench                | SystemSkipWhile                |     1,033.2072 ns |      6.7684 ns |      6.3311 ns | 0.0076 |      - |     104 B |
+| SumBench                      | SystemSum                      |        72.6670 ns |      0.4433 ns |      0.3930 ns |      - |      - |         - |
+| TakeBench                     | SystemTake                     |     4,131.2056 ns |     16.9948 ns |     15.8970 ns |      - |      - |      48 B |
+| TakeLastBench                 | SystemTakeLast                 |     5,963.2710 ns |     26.1940 ns |     24.5018 ns | 0.0076 |      - |     136 B |
+| TakeWhileBench                | SystemTakeWhile                |     2,528.6637 ns |     24.5450 ns |     22.9594 ns | 0.0076 |      - |     104 B |
+| ThenByBench                   | SystemThenBy                   |    18,489.5338 ns |    146.6620 ns |    130.0120 ns | 1.5869 | 0.0916 |   20928 B |
+| ThenByBench                   | SystemThenByDescending         |    18,479.7923 ns |    114.0276 ns |    101.0825 ns | 1.5869 | 0.0916 |   20928 B |
+| ToArrayBench                  | SystemToArray                  |       212.9494 ns |      4.2501 ns |      4.3645 ns | 0.3183 |      - |    4160 B |
+| ToDictionaryBench             | SystemToDictionary             |     4,181.7262 ns |     72.0388 ns |     63.8605 ns | 1.6937 | 0.1297 |   22192 B |
+| ToHashSetBench                | SystemToHashSet                |     4,549.8736 ns |     88.4042 ns |    105.2389 ns | 1.3580 | 0.0839 |   17800 B |
+| ToListBench                   | SystemToList                   |       171.1692 ns |      3.4377 ns |      4.9303 ns | 0.3176 | 0.0048 |    4152 B |
+| ToLookupBench                 | SystemToLookup                 |    18,906.6038 ns |    335.9899 ns |    297.8463 ns | 9.3994 | 2.3499 |  123040 B |
+| TryGetNonEnumeratedCountBench | SystemTryGetNonEnumeratedCount |         3.0428 ns |      0.0205 ns |      0.0191 ns |      - |      - |         - |
+| UnionBench                    | SystemUnion                    |    13,143.7314 ns |    112.2133 ns |    104.9644 ns | 4.4708 | 0.7324 |   58696 B |
+| UnionByBench                  | SystemUnionBy                  |    14,389.3748 ns |    186.6081 ns |    174.5533 ns | 4.4708 | 0.7324 |   58736 B |
+| WhereBench                    | SystemWhere                    |       933.3097 ns |      7.2146 ns |      6.7485 ns | 0.0029 |      - |      48 B |
+| ZipBench                      | SystemZip                      |     5,984.7669 ns |     35.3700 ns |     33.0851 ns | 0.0076 |      - |     144 B |
