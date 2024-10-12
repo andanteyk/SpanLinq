@@ -9,12 +9,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '3.1.x', '9.x.x' ]
     steps:
       - uses: actions/checkout@v4
-      - name: Setup .NET
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.x.x
+          dotnet-version: ${{ matrix.dotnet-version }}
+          cache: true
       - name: Build with dotnet
         run: dotnet build -c Release
       - name: Run tests with coverage
