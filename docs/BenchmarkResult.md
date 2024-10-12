@@ -4,8 +4,8 @@ This document provides an overview of performance benchmarks for various operati
 In the following benchmarks:
 
 - Span*** refers to SpanLinq.SpanEnumerable.***
-  System*** refers to System.Linq.Enumerable.***
-  Handcrafted*** refers to optimized code that uses Span<T> directly.
+- System*** refers to System.Linq.Enumerable.***
+- Handcrafted*** refers to optimized code that uses Span<T> directly.
 
 These comparisons will help you evaluate the performance differences between standard LINQ operations, SpanLinq implementations, and hand-optimized code using Span<T>.
 
