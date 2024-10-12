@@ -20,4 +20,4 @@ jobs:
       - name: Run tests with coverage
         run: |
           cd ./SpanLinq.Tests/
-          dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover"
+          dotnet test -c Release --no-build
