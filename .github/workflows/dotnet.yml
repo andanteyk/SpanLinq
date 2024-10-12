@@ -18,7 +18,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
-          cache: true
       - name: Build with dotnet
         run: dotnet build -c Release
       - name: Run tests with coverage
