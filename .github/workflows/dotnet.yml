@@ -9,21 +9,32 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        dotnet-version: [ ['3.1.x', "netcoreapp3.1"], ['9.0.x', "net9.0"] ]
     steps:
-      - name: Checkout
       - uses: actions/checkout@v4
-      - name: Setup .NET ${{ matrix.dotnet-version[0] }}
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ matrix.dotnet-version[0] }}
+          dotnet-version: '9.0.x'
       - name: Install dependencies
-        run: dotnet restore -p:TargetFramework=${{ matrix.dotnet-version[1] }}
+        run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET 3.1
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '3.1.x'
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x.x'
+      - name: Display .NET version
+        run: dotnet --list-sdks
       - name: Test
         run: |
           cd ./SpanLinq.Tests/
-          dotnet test --no-restore --verbosity normal -f=${{ matrix.dotnet-version[1] }}
+          dotnet test --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
