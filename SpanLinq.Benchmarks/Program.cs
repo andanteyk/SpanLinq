@@ -14,5 +14,3 @@ var config = DefaultConfig.Instance
     .WithOption(ConfigOptions.JoinSummary, true);
 
 BenchmarkRunner.Run(typeof(Program).Assembly, config);
-
-
