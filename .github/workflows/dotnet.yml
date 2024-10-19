@@ -9,15 +9,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ ['3.1.x', "netcoreapp3.1"], ['9.0.x', "net9.0"] ]
     steps:
+      - name: Checkout
       - uses: actions/checkout@v4
-      - name: Setup .NET
+      - name: Setup .NET ${{ matrix.dotnet-version[0] }}
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.x.x
-      - name: Build with dotnet
-        run: dotnet build -c Release
-      - name: Run tests
+          dotnet-version: ${{ matrix.dotnet-version[0] }}
+      - name: Install dependencies
+        run: dotnet restore -p:TargetFramework=${{ matrix.dotnet-version[1] }}
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      - name: Test
         run: |
           cd ./SpanLinq.Tests/
-          dotnet test -c Release --no-build
+          dotnet test --no-restore --verbosity normal -f=${{ matrix.dotnet-version[1] }}
