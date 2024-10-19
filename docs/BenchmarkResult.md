@@ -163,11 +163,11 @@ When reviewing benchmarks or performance data, always consider these system sett
 |-------------------------------|--------------------------------|------------------:|---------------:|---------------:|-------:|-------:|----------:|
 | Concat                   | SystemConcat                   |     3,456.7250 ns |     18.5042 ns |     17.3088 ns | 0.0076 |      - |     120 B |
 | Concat                   | SpanConcat                     |     6,078.0059 ns |     18.3870 ns |     17.1992 ns |      - |      - |         - |
-| Contains                 | SpanContains                   |        47.2104 ns |      0.2871 ns |      0.2685 ns |      - |      - |         - |
 
 ### Contains
 | Type                          | Method                         |              Mean |          Error |         StdDev |   Gen0 |   Gen1 | Allocated |
 |-------------------------------|--------------------------------|------------------:|---------------:|---------------:|-------:|-------:|----------:|
+| Contains                 | SpanContains                   |        47.2104 ns |      0.2871 ns |      0.2685 ns |      - |      - |         - |
 | Contains                 | SystemContains                 |        48.7280 ns |      0.1415 ns |      0.1323 ns |      - |      - |         - |
 | Contains                 | HandcraftedContains            |        51.6118 ns |      0.3134 ns |      0.2931 ns |      - |      - |         - |
 
